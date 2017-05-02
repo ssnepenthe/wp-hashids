@@ -1,0 +1,22 @@
+{
+    "name": "ssnepenthe/wp-hashids",
+    "description": "@todo",
+    "type": "wordpress-plugin",
+    "homepage": "https://github.com/ssnepenthe/wp-hashids",
+    "license": "GPL-2.0",
+    "require": {
+        "php": ">=7.0",
+        "composer/installers": "^1.0",
+        "hashids/hashids": "^2.0",
+        "ssnepenthe/metis": "dev-master",
+        "ssnepenthe/wp-requirements": "^0.1"
+    },
+    "require-dev": {
+        "10up/wp_mock": "dev-dev",
+        "mockery/mockery": "^0.9",
+        "psy/psysh": "^0.8"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
