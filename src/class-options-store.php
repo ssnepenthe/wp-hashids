@@ -10,7 +10,13 @@ namespace WP_Hashids;
 /**
  * Defines the options store class.
  */
-class Options_Store {
+class Options_Store implements Key_Value_Store_Interface {
+	protected $prefix;
+
+	public function __construct( string $prefix = '' ) {
+		$this->prefix = $prefix;
+	}
+
 	/**
 	 * Add an option entry if it does not already exist.
 	 *
@@ -20,7 +26,7 @@ class Options_Store {
 	 * @return boolean
 	 */
 	public function add( string $key, $value ) : bool {
-		return add_option( $key, $value );
+		return add_option( $this->option_key( $key ), $value );
 	}
 
 	/**
@@ -31,7 +37,7 @@ class Options_Store {
 	 * @return boolean
 	 */
 	public function delete( string $key ) : bool {
-		return delete_option( $key );
+		return delete_option( $this->option_key( $key ) );
 	}
 
 	/**
@@ -42,7 +48,7 @@ class Options_Store {
 	 * @return mixed       Option value or null if not set.
 	 */
 	public function get( string $key ) {
-		$value = get_option( $key );
+		$value = get_option( $this->option_key( $key ) );
 
 		if ( false === $value ) {
 			return null;
@@ -60,6 +66,14 @@ class Options_Store {
 	 * @return boolean
 	 */
 	public function set( string $key, $value ) : bool {
-		return update_option( $key, $value );
+		return update_option( $this->option_key( $key ), $value );
+	}
+
+	protected function option_key( string $key ) {
+		if ( $this->prefix ) {
+			$key = "{$this->prefix}_{$key}";
+		}
+
+		return $key;
 	}
 }

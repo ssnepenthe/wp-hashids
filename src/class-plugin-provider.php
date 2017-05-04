@@ -9,6 +9,7 @@ namespace WP_Hashids;
 
 use WP;
 use WP_Post;
+use Hashids\HashidsInterface;
 use Metis\Container\Container;
 use Metis\Container\Abstract_Bootable_Service_Provider;
 
@@ -24,24 +25,9 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	public function boot() {
 		add_action( 'init', [ $this, 'add_rewrite_tag' ] );
 		add_action( 'parse_request', [ $this, 'parse_request' ] );
-		// Shutdown is late so debug bar will be unable to inspect insert query.
-		add_action( 'shutdown', [ $this, 'maybe_save_options' ] );
 
 		add_filter( 'pre_post_link', [ $this, 'post_link' ], 10, 2 );
 		add_filter( 'post_type_link', [ $this, 'post_link' ], 10, 2 );
-	}
-
-	/**
-	 * Hook the option manager ->save() method to the shutdown action.
-	 *
-	 * @return void
-	 */
-	public function maybe_save_options() {
-		$options = $this->get_container()->make( 'wph.options.manager' );
-
-		if ( $options->is_dirty() ) {
-			$options->save();
-		}
 	}
 
 	/**
@@ -54,7 +40,7 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 			return;
 		}
 
-		$decoded = $this->get_container()->make( 'wph.hashids' )
+		$decoded = $this->get_container()->make( HashidsInterface::class )
 			->decode( $wp->query_vars['hashid'] );
 		$id = reset( $decoded );
 
@@ -91,26 +77,9 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 * @return void
 	 */
 	public function add_rewrite_tag() {
-		$options = $this->get_container()->make( 'wph.options.manager' );
-		$regex = '';
+		$options = $this->get_container()->make( Options_Manager_Interface::class );
 
-		// @todo Account for case where all alphabet settings are false.
-		// @todo Account for case where only numerals is true (strlen($alphabet) < 16).
-		if ( $options->get( 'lowercase' ) ) {
-			$regex .= 'a-z';
-		}
-
-		if ( $options->get( 'uppercase' ) ) {
-			$regex .= 'A-Z';
-		}
-
-		if ( $options->get( 'numerals' ) ) {
-			$regex .= '0-9';
-		}
-
-		$regex = "([{$regex}]+)";
-
-		add_rewrite_tag( $options->get( 'rewrite_tag' ), $regex );
+		add_rewrite_tag( $options->rewrite_tag(), "([{$options->regex()}]+)" );
 	}
 
 	/**
@@ -119,11 +88,12 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 * @return void
 	 */
 	public function post_link( string $link, WP_Post $post ) : string {
+		$options = $this->get_container()->make( Options_Manager_Interface::class );
+		$hashids = $this->get_container()->make( HashidsInterface::class );
+
 		return str_replace(
-			$this->get_container()->make( 'wph.options.manager' )
-				->get( 'rewrite_tag' ),
-			$this->get_container()->make( 'wph.hashids' )
-				->encode( $post->ID ),
+			$options->rewrite_tag(),
+			$hashids->encode( $post->ID ),
 			$link
 		);
 	}
@@ -135,47 +105,17 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 */
 	public function register() {
 		$this->get_container()->singleton(
-			'wph.options.store',
+			Key_Value_Store_Interface::class,
 			Options_Store::class
 		);
 
 		$this->get_container()->singleton(
-			'wph.options.manager',
-			function( Container $container ) {
-				$manager = new Option_Manager(
-					'wph_options',
-					[
-						'lowercase' => true,
-						'min_length' => 6,
-						'numerals' => true,
-						// @todo Should this be in here? Basically allows overrides.
-						'rewrite_tag' => '%hashid%',
-						'salt' => function() use ( $container ) {
-							return $container->make( 'wph.salt_generator' )
-								->generate();
-						},
-						'uppercase' => true,
-					],
-					[
-						'lowercase' => 'bool',
-						'min_length' => 'int',
-						'numerals' => 'bool',
-						'rewrite_tag' => 'string',
-						'salt' => 'string',
-						'uppercase' => 'bool',
-					],
-					$container->make( 'wph.options.store' )
-				);
-				// @todo Is it a good idea to automatically hit DB like this?
-				$manager->init();
-
-				return $manager;
-			}
+			Options_Manager_Interface::class,
+			Options_Manager::class
 		);
 
-		$this->get_container()->singleton(
-			'wph.salt_generator',
-			Salt_Generator::class
-		);
+		$this->get_container()->when( Options_Store::class )
+			->needs( '$prefix' )
+			->give( 'wp_hashids' );
 	}
 }

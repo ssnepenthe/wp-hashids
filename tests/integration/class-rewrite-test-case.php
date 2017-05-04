@@ -1,5 +1,7 @@
 <?php
 
+use Hashids\HashidsInterface;
+
 abstract class WPH_Rewrite_Test_Case extends WP_UnitTestCase {
 	protected $posts;
 	protected $post_types;
@@ -81,31 +83,37 @@ abstract class WPH_Rewrite_Test_Case extends WP_UnitTestCase {
 			'post' => [
 				[
 					'post' => $post_one,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $post_one->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $post_one->ID ),
 				],
 				[
 					'post' => $post_two,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $post_two->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $post_two->ID ),
 				],
 			],
 			'one' => [
 				[
 					'post' => $one_one,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $one_one->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $one_one->ID ),
 				],
 				[
 					'post' => $one_two,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $one_two->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $one_two->ID ),
 				],
 			],
 			'two' => [
 				[
 					'post' => $two_one,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $two_one->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $two_one->ID ),
 				],
 				[
 					'post' => $two_two,
-					'hashid' => \Metis\app( 'wph.hashids' )->encode( $two_two->ID ),
+					'hashid' => \Metis\app( HashidsInterface::class )
+						->encode( $two_two->ID ),
 				],
 			],
 		];

@@ -1,12 +1,14 @@
 <?php
 
+use WP_Hashids\Options_Store;
+
 class Options_Store_Test extends WP_UnitTestCase {
 	protected $wph_store;
 
 	function setUp() {
 		parent::setUp();
 
-		$this->wph_store = new WP_Hashids\Options_Store;
+		$this->wph_store = new Options_Store;
 	}
 
 	function tearDown() {
