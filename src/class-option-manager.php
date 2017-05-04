@@ -1,6 +1,6 @@
 <?php
 /**
- * Array_Option_Manager class.
+ * Option_Manager class.
  *
  * @package wp-hashids
  */
@@ -8,9 +8,9 @@
 namespace WP_Hashids;
 
 /**
- * Defines the array option manager class.
+ * Defines the option manager class.
  */
-class Array_Option_Manager {
+class Option_Manager {
 	/**
 	 * Option data.
 	 *
@@ -72,7 +72,7 @@ class Array_Option_Manager {
 		string $key,
 		array $defaults,
 		array $schema,
-		Options_Store $store
+		Key_Value_Store_Interface $store
 	) {
 		$this->key = $key;
 		$this->schema = $schema;

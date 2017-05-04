@@ -1,6 +1,6 @@
 <?php
 
-class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
+class Option_Manager_Test extends PHPUnit_Framework_TestCase {
 	function setUp() {
 		WP_Mock::setUp();
 	}
@@ -11,7 +11,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_get_an_entry() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[
 				'two' => 'bananas',
@@ -45,7 +45,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_knows_if_a_value_is_set() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[ 'two' => 'bananas' ],
 			[ 'one' => 'string', 'two' => 'string', 'three' => 'string' ],
@@ -66,7 +66,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_be_initialized() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[],
 			[ 'one' => 'string', 'two' => 'string' ],
@@ -87,7 +87,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_knows_when_it_has_unsaved_changes() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[],
 			[ 'one' => 'string', 'two' => 'string' ],
@@ -105,7 +105,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_set_data() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[],
 			[ 'one' => 'string', 'two' => 'string', 'three' => 'string' ],
@@ -136,7 +136,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_set_defaults() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[],
 			[ 'one' => 'string', 'two' => 'string', 'three' => 'string' ],
@@ -160,7 +160,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 			},
 			'times' => 1,
 		] );
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[
 				'four' => 1,
@@ -197,7 +197,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_save_to_db() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[],
 			[ 'one' => 'string' ],
@@ -219,7 +219,7 @@ class Array_Option_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_unset_data() {
-		$manager = new WP_Hashids\Array_Option_Manager(
+		$manager = new WP_Hashids\Option_Manager(
 			'wph_test_options',
 			[ 'one' => 'apples' ],
 			[ 'one' => 'string', 'two' => 'string' ],

@@ -142,7 +142,7 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 		$this->get_container()->singleton(
 			'wph.options.manager',
 			function( Container $container ) {
-				$manager = new Array_Option_Manager(
+				$manager = new Option_Manager(
 					'wph_options',
 					[
 						'lowercase' => true,
