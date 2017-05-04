@@ -22,10 +22,13 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->boot_links();
-		$this->boot_options();
-		$this->boot_request();
-		$this->boot_rewrite();
+		add_action( 'init', [ $this, 'add_rewrite_tag' ] );
+		add_action( 'parse_request', [ $this, 'parse_request' ] );
+		// Shutdown is late so debug bar will be unable to inspect insert query.
+		add_action( 'shutdown', [ $this, 'maybe_save_options' ] );
+
+		add_filter( 'pre_post_link', [ $this, 'post_link' ], 10, 2 );
+		add_filter( 'post_type_link', [ $this, 'post_link' ], 10, 2 );
 	}
 
 	/**
@@ -33,15 +36,12 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function boot_options() {
-		// Shutdown is late so debug bar will be unable to inspect insert query.
-		add_action( 'shutdown', function() {
-			$options = $this->get_container()->make( 'wph.options.manager' );
+	public function maybe_save_options() {
+		$options = $this->get_container()->make( 'wph.options.manager' );
 
-			if ( $options->is_dirty() ) {
-				$options->save();
-			}
-		} );
+		if ( $options->is_dirty() ) {
+			$options->save();
+		}
 	}
 
 	/**
@@ -49,42 +49,40 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function boot_request() {
-		add_action( 'parse_request', function( WP $wp ) {
-			if ( ! isset( $wp->query_vars['hashid'] ) ) {
-				return;
-			}
+	public function parse_request( WP $wp ) {
+		if ( ! isset( $wp->query_vars['hashid'] ) ) {
+			return;
+		}
 
-			$decoded = $this->get_container()->make( 'wph.hashids' )
-				->decode( $wp->query_vars['hashid'] );
-			$id = reset( $decoded );
+		$decoded = $this->get_container()->make( 'wph.hashids' )
+			->decode( $wp->query_vars['hashid'] );
+		$id = reset( $decoded );
 
-			// If hashid is invalid, $decoded will be empty which makes $id false.
-			if ( $id ) {
-				// @todo If permalink structure includes more rewrite tags than just
-				// %hashid%, WP very likely already has everything it needs... We
-				// should be doing some more robust checks in here.
-				$post = get_post( $id );
-				$pto = get_post_type_object( $post->post_type );
+		// If hashid is invalid, $decoded will be empty which makes $id false.
+		if ( $id ) {
+			// @todo If permalink structure includes more rewrite tags than just
+			// %hashid%, WP very likely already has everything it needs... We
+			// should be doing some more robust checks in here.
+			$post = get_post( $id );
+			$pto = get_post_type_object( $post->post_type );
 
-				// @todo Verify with all built-in post types.
-				if ( ! $pto->_builtin ) {
-					$wp->set_query_var( $pto->query_var, $post->post_name );
-					$wp->set_query_var( 'post_type', $pto->name );
-					$wp->set_query_var( 'name', $post->post_name );
-				} else {
-					$wp->set_query_var( 'p', $id );
-				}
+			// @todo Verify with all built-in post types.
+			if ( ! $pto->_builtin ) {
+				$wp->set_query_var( $pto->query_var, $post->post_name );
+				$wp->set_query_var( 'post_type', $pto->name );
+				$wp->set_query_var( 'name', $post->post_name );
 			} else {
-				// Hashid is invalid - We likely captured a request for a page with a
-				// single word slug (i.e. matches [a-zA-Z0-9]+)...
-				// @todo Better way to handle?
-				$wp->set_query_var( 'pagename', $wp->query_vars['hashid'] );
-				unset( $wp->query_vars['hashid'] );
+				$wp->set_query_var( 'p', $id );
 			}
+		} else {
+			// Hashid is invalid - We likely captured a request for a page with a
+			// single word slug (i.e. matches [a-zA-Z0-9]+)...
+			// @todo Better way to handle?
+			$wp->set_query_var( 'pagename', $wp->query_vars['hashid'] );
+			unset( $wp->query_vars['hashid'] );
+		}
 
-			// @todo Should we unset hashid qv for all requests?
-		} );
+		// @todo Should we unset hashid qv for all requests?
 	}
 
 	/**
@@ -92,29 +90,27 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function boot_rewrite() {
-		add_action( 'init', function() {
-			$options = $this->get_container()->make( 'wph.options.manager' );
-			$regex = '';
+	public function add_rewrite_tag() {
+		$options = $this->get_container()->make( 'wph.options.manager' );
+		$regex = '';
 
-			// @todo Account for case where all alphabet settings are false.
-			// @todo Account for case where only numerals is true (strlen($alphabet) < 16).
-			if ( $options->get( 'lowercase' ) ) {
-				$regex .= 'a-z';
-			}
+		// @todo Account for case where all alphabet settings are false.
+		// @todo Account for case where only numerals is true (strlen($alphabet) < 16).
+		if ( $options->get( 'lowercase' ) ) {
+			$regex .= 'a-z';
+		}
 
-			if ( $options->get( 'uppercase' ) ) {
-				$regex .= 'A-Z';
-			}
+		if ( $options->get( 'uppercase' ) ) {
+			$regex .= 'A-Z';
+		}
 
-			if ( $options->get( 'numerals' ) ) {
-				$regex .= '0-9';
-			}
+		if ( $options->get( 'numerals' ) ) {
+			$regex .= '0-9';
+		}
 
-			$regex = "([{$regex}]+)";
+		$regex = "([{$regex}]+)";
 
-			add_rewrite_tag( $options->get( 'rewrite_tag' ), $regex );
-		} );
+		add_rewrite_tag( $options->get( 'rewrite_tag' ), $regex );
 	}
 
 	/**
@@ -122,18 +118,14 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 *
 	 * @return void
 	 */
-	protected function boot_links() {
-		foreach ( [ 'pre_post_link', 'post_type_link' ] as $filter ) {
-			add_filter( $filter, function( string $link, WP_Post $post ) : string {
-				return str_replace(
-					$this->get_container()->make( 'wph.options.manager' )
-						->get( 'rewrite_tag' ),
-					$this->get_container()->make( 'wph.hashids' )
-						->encode( $post->ID ),
-					$link
-				);
-			}, 10, 2 );
-		}
+	public function post_link( string $link, WP_Post $post ) : string {
+		return str_replace(
+			$this->get_container()->make( 'wph.options.manager' )
+				->get( 'rewrite_tag' ),
+			$this->get_container()->make( 'wph.hashids' )
+				->encode( $post->ID ),
+			$link
+		);
 	}
 
 	/**
