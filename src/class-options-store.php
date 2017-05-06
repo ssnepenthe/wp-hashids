@@ -11,8 +11,18 @@ namespace WP_Hashids;
  * Defines the options store class.
  */
 class Options_Store implements Key_Value_Store_Interface {
+	/**
+	 * Prefix to prepend to option keys.
+	 *
+	 * @var string
+	 */
 	protected $prefix;
 
+	/**
+	 * Class constructor.
+	 *
+	 * @param string $prefix Prefix to prepend to option keys.
+	 */
 	public function __construct( string $prefix = '' ) {
 		$this->prefix = $prefix;
 	}
@@ -69,7 +79,14 @@ class Options_Store implements Key_Value_Store_Interface {
 		return update_option( $this->option_key( $key ), $value );
 	}
 
-	protected function option_key( string $key ) {
+	/**
+	 * Generate the option key if a prefix has been set.
+	 *
+	 * @param  string $key Option key.
+	 *
+	 * @return string
+	 */
+	protected function option_key( string $key ) : string {
 		if ( $this->prefix ) {
 			$key = "{$this->prefix}_{$key}";
 		}

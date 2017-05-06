@@ -1,11 +1,24 @@
 <?php
+/**
+ * Admin_Provider class.
+ *
+ * @package wp-hashids
+ */
 
 namespace WP_Hashids;
 
 use Metis\Container\Container;
 use Metis\Container\Abstract_Bootable_Service_Provider;
 
+/**
+ * Defines the admin provider class.
+ */
 class Admin_Provider extends Abstract_Bootable_Service_Provider {
+	/**
+	 * Provider-specific boot logic.
+	 *
+	 * @return void
+	 */
 	public function boot() {
 		if ( ! is_admin() || $this->all_config_constants_are_defined() ) {
 			return;
@@ -17,6 +30,11 @@ class Admin_Provider extends Abstract_Bootable_Service_Provider {
 		add_action( 'admin_menu', [ $page, 'register_page' ] );
 	}
 
+	/**
+	 * Provider-specific registration logic.
+	 *
+	 * @return void
+	 */
 	public function register() {
 		$this->get_container()->singleton( // @todo
 			Options_Page::class,
@@ -29,7 +47,12 @@ class Admin_Provider extends Abstract_Bootable_Service_Provider {
 		);
 	}
 
-	protected function all_config_constants_are_defined() {
+	/**
+	 * Check if all three plugin settings have been configured via constants.
+	 *
+	 * @return boolean
+	 */
+	protected function all_config_constants_are_defined() : bool {
 		return defined( 'WP_HASHIDS_ALPHABET' )
 			&& defined( 'WP_HASHIDS_MIN_LENGTH' )
 			&& defined( 'WP_HASHIDS_SALT' );

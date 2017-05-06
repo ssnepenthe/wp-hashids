@@ -1,4 +1,11 @@
-<p>
+<?php
+/**
+ * The main options page section template.
+ *
+ * @package wp-hashids
+ */
+
+?><p>
 	Configure the settings for the WP Hashids plugin here. Sensible defaults have been set for already.
 </p>
 

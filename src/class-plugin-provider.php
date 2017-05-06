@@ -33,12 +33,14 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 		// not be available from the REST API...
 		add_action( 'init', [
 			$this->get_container()->make( Options_Manager::class ),
-			'register_settings'
+			'register_settings',
 		] );
 	}
 
 	/**
 	 * Map hashids to post ids at the parse_request hook.
+	 *
+	 * @param  WP $wp Global WP instance.
 	 *
 	 * @return void
 	 */
@@ -92,7 +94,10 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	/**
 	 * Insert post specific hashids in permalink functions.
 	 *
-	 * @return void
+	 * @param  string  $link Post link.
+	 * @param  WP_Post $post WP post object.
+	 *
+	 * @return string
 	 */
 	public function post_link( string $link, WP_Post $post ) : string {
 		$options = $this->get_container()->make( Options_Manager::class );

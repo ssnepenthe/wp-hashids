@@ -1,4 +1,11 @@
-<fieldset>
+<?php
+/**
+ * The alphabet radio inputs.
+ *
+ * @package wp-hashids
+ */
+
+?><fieldset>
 	<legend class="screen-reader-text">
 		<!-- @todo -->
 	</legend>

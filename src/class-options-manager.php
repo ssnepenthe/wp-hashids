@@ -48,12 +48,27 @@ class Options_Manager {
 		],
 	];
 
+	/**
+	 * Key-value store instance.
+	 *
+	 * @var Key_Value_Store_Interface
+	 */
 	protected $store;
 
+	/**
+	 * Class constructor.
+	 *
+	 * @param Key_Value_Store_Interface $store Key-value store instance.
+	 */
 	public function __construct( Key_Value_Store_Interface $store ) {
 		$this->store = $store;
 	}
 
+	/**
+	 * Get the configured alphabet - Looks in constants first, then DB.
+	 *
+	 * @return string
+	 */
 	public function alphabet() : string {
 		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
 			? WP_HASHIDS_ALPHABET
@@ -65,6 +80,11 @@ class Options_Manager {
 		return self::ALPHABET_MAP[ $alphabet ]['alphabet'];
 	}
 
+	/**
+	 * Get the configured minimum length - Looks in constants first then DB.
+	 *
+	 * @return integer
+	 */
 	public function min_length() : int {
 		$min_length = defined( 'WP_HASHIDS_MIN_LENGTH' )
 			? WP_HASHIDS_MIN_LENGTH
@@ -74,6 +94,11 @@ class Options_Manager {
 		return absint( $min_length );
 	}
 
+	/**
+	 * Get the regular expression matching the currently configured alphabet.
+	 *
+	 * @return string
+	 */
 	public function regex() : string {
 		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
 			? WP_HASHIDS_ALPHABET
@@ -85,6 +110,11 @@ class Options_Manager {
 		return self::ALPHABET_MAP[ $alphabet ]['regex'];
 	}
 
+	/**
+	 * Register plugin settings with WordPress.
+	 *
+	 * @return void
+	 */
 	public function register_settings() {
 		register_setting( 'wp_hashids_group', 'wp_hashids_alphabet', [
 			'default' => 'all',
@@ -105,10 +135,21 @@ class Options_Manager {
 		] );
 	}
 
+	/**
+	 * Get the hashids rewrite tag.
+	 *
+	 * @return string
+	 */
 	public function rewrite_tag() : string {
 		return '%hashid%';
 	}
 
+	/**
+	 * Get the currently configured salt - Looks in constants first then DB. If none
+	 * found, a new salt is generated and automatically saved to the DB.
+	 *
+	 * @return string
+	 */
 	public function salt() : string {
 		$needs_save = false;
 		$salt = defined( 'WP_HASHIDS_SALT' )
@@ -130,6 +171,13 @@ class Options_Manager {
 		return $salt;
 	}
 
+	/**
+	 * Sanitize the alphabet setting.
+	 *
+	 * @param  mixed $alphabet Alphabet setting.
+	 *
+	 * @return string
+	 */
 	public function sanitize_alphabet( $alphabet ) : string {
 		if ( ! $this->is_valid_alphabet( $alphabet ) ) {
 			$alphabet = 'all';
@@ -138,6 +186,13 @@ class Options_Manager {
 		return $alphabet;
 	}
 
+	/**
+	 * Sanitize the salt setting or generate a new salt if null given.
+	 *
+	 * @param  mixed $salt Salt setting.
+	 *
+	 * @return string
+	 */
 	public function sanitize_salt( $salt ) : string {
 		if ( is_null( $salt ) ) {
 			// @todo
@@ -147,6 +202,13 @@ class Options_Manager {
 		return (string) $salt;
 	}
 
+	/**
+	 * Check if a given alphabet setting is valid.
+	 *
+	 * @param  mixed $alphabet Alphabet setting.
+	 *
+	 * @return boolean
+	 */
 	protected function is_valid_alphabet( $alphabet ) : bool {
 		return in_array( $alphabet, array_keys( self::ALPHABET_MAP ), true );
 	}

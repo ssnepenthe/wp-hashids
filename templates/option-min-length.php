@@ -1,4 +1,13 @@
-<input
+<?php
+/**
+ * The minimum length input template.
+ *
+ * @package wp-hashids
+ *
+ * @todo Placeholder?
+ */
+
+?><input
 	class="small-text"
 	id="wp_hashids_min_length"
 	min="0"
@@ -7,5 +16,3 @@
 	type="number"
 	value="<?php echo esc_attr( $value ) ?>"
 > characters
-
-<!-- @todo Placeholder? -->

@@ -1,13 +1,38 @@
 <?php
+/**
+ * Options_Page class.
+ *
+ * @package wp-hashids
+ */
 
 namespace WP_Hashids;
 
 use Metis\View\Template_Interface;
 
+/**
+ * Defines the options page class.
+ */
 class Options_Page {
+	/**
+	 * Options manager instance.
+	 *
+	 * @var Options_Manager
+	 */
 	protected $manager;
+
+	/**
+	 * Template instance.
+	 *
+	 * @var Template_Interface
+	 */
 	protected $view;
 
+	/**
+	 * Class constructor.
+	 *
+	 * @param Options_Manager    $manager Options manager instance.
+	 * @param Template_Interface $view    Template instance.
+	 */
 	public function __construct(
 		Options_Manager $manager,
 		Template_Interface $view
@@ -16,6 +41,11 @@ class Options_Page {
 		$this->view = $view;
 	}
 
+	/**
+	 * Register the options page with WordPress.
+	 *
+	 * @return void
+	 */
 	public function register_page() {
 		add_options_page(
 			'WP Hashids Settings',
@@ -31,6 +61,11 @@ class Options_Page {
 		);
 	}
 
+	/**
+	 * Register the settings sections and fields for the options page.
+	 *
+	 * @return void
+	 */
 	public function register_sections_and_fields() {
 		add_settings_section(
 			'wp_hashids',
