@@ -28,6 +28,13 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 
 		add_filter( 'pre_post_link', [ $this, 'post_link' ], 10, 2 );
 		add_filter( 'post_type_link', [ $this, 'post_link' ], 10, 2 );
+
+		// Docs still recommend using the admin_init hook but then the options will
+		// not be available from the REST API...
+		add_action( 'init', [
+			$this->get_container()->make( Options_Manager::class ),
+			'register_settings'
+		] );
 	}
 
 	/**
@@ -77,7 +84,7 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 * @return void
 	 */
 	public function add_rewrite_tag() {
-		$options = $this->get_container()->make( Options_Manager_Interface::class );
+		$options = $this->get_container()->make( Options_Manager::class );
 
 		add_rewrite_tag( $options->rewrite_tag(), "([{$options->regex()}]+)" );
 	}
@@ -88,7 +95,7 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	 * @return void
 	 */
 	public function post_link( string $link, WP_Post $post ) : string {
-		$options = $this->get_container()->make( Options_Manager_Interface::class );
+		$options = $this->get_container()->make( Options_Manager::class );
 		$hashids = $this->get_container()->make( HashidsInterface::class );
 
 		return str_replace(
@@ -109,10 +116,7 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 			Options_Store::class
 		);
 
-		$this->get_container()->singleton(
-			Options_Manager_Interface::class,
-			Options_Manager::class
-		);
+		$this->get_container()->singleton( Options_Manager::class );
 
 		$this->get_container()->when( Options_Store::class )
 			->needs( '$prefix' )

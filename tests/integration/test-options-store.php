@@ -63,4 +63,26 @@ class Options_Store_Test extends WP_UnitTestCase {
 		$this->wph_store->set( 'test', 'value 2' );
 		$this->assertEquals( 'value 2', get_option( 'test' ) );
 	}
+
+	/** @test */
+	function it_prepends_prefix_to_option_key_when_provided() {
+		$store = new Options_Store( 'pfx' );
+
+		$this->assertFalse( get_option( 'pfx_test' ) );
+
+		// When using add.
+		$store->add( 'test', 'value' );
+		$this->assertEquals( 'value', get_option( 'pfx_test' ) );
+
+		// When using get.
+		$this->assertEquals( 'value', $store->get( 'test' ) );
+
+		// When using set.
+		$store->set( 'test', 'value 2' );
+		$this->assertEquals( 'value 2', get_option( 'pfx_test' ) );
+
+		// When using delete.
+		$store->delete( 'test' );
+		$this->assertFalse( get_option( 'pfx_test' ) );
+	}
 }

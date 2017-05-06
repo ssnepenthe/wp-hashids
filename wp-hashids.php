@@ -30,8 +30,10 @@ function _wph_require_if_exists( $file ) {
 _wph_require_if_exists( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
 
 $wph_checker = WP_Requirements\Plugin_Checker::make( 'WP Hashids', __FILE__ )
-	// Uses scalar type hints.
+	// Uses scalar type hints, depends on ssnepenthe/metis.
 	->php_at_least( '7.0' )
+	// Uses register_setting() with args array.
+	->wp_at_least( '4.7' )
 	// Hashids lib must be loaded.
 	->class_exists( 'Hashids\\Hashids' )
 	// Hashids lib requires one of bcmath or gmp.
@@ -41,6 +43,8 @@ $wph_checker = WP_Requirements\Plugin_Checker::make( 'WP Hashids', __FILE__ )
 
 if ( $wph_checker->requirements_met() ) {
 	$wph_plugin = new Metis\Package( [
+		'Metis\\View\\View_Provider',
+		'WP_Hashids\\Admin_Provider',
 		'WP_Hashids\\Hashids_Provider',
 		'WP_Hashids\\Plugin_Provider',
 	] );

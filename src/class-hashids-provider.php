@@ -27,19 +27,19 @@ class Hashids_Provider extends Abstract_Service_Provider {
 		$this->get_container()->when( Hashids::class )
 			->needs( '$alphabet' )
 			->give( function( Container $container ) {
-				return $container->make( Options_Manager_Interface::class )
+				return $container->make( Options_Manager::class )
 					->alphabet();
 			} );
 		$this->get_container()->when( Hashids::class )
 			->needs( '$minHashLength' )
 			->give( function( Container $container ) {
-				return $container->make( Options_Manager_Interface::class )
+				return $container->make( Options_Manager::class )
 					->min_length();
 			} );
 		$this->get_container()->when( Hashids::class )
 			->needs( '$salt' )
 			->give( function( Container $container ) {
-				return $container->make( Options_Manager_Interface::class )->salt();
+				return $container->make( Options_Manager::class )->salt();
 			} );
 	}
 }
