@@ -85,7 +85,7 @@ class Options_Page {
 
 				foreach ( Options_Manager::ALPHABET_MAP as $value => $details ) {
 					$options[] = [
-						'checked' => $value === $current,
+						'checked' => $current === $details['alphabet'],
 						'label' => $details['label'],
 						'regex' => $details['regex'],
 						'value' => $value,
