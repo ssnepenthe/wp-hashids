@@ -9,36 +9,42 @@ namespace WP_Hashids;
 
 use WP;
 use WP_Post;
-use Hashids\HashidsInterface;
-use Metis\Container\Container;
-use Metis\Container\Abstract_Bootable_Service_Provider;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 /**
  * Defines the plugin provider class.
  */
-class Plugin_Provider extends Abstract_Bootable_Service_Provider {
+class Plugin_Provider implements ServiceProviderInterface {
 	/**
 	 * Provider specific boot logic.
 	 *
+	 * @param  Container $container The plugin container instance.
+	 *
 	 * @return void
 	 */
-	public function boot() {
-		add_action( 'init', [
-			$this->get_container()->make( Rewrite_Manager::class ),
-			'register_rewrites',
-		] );
+	public function boot( Container $container ) {
 		// Docs still recommend using the admin_init hook but then the options will
 		// not be available from the REST API...
-		add_action( 'init', [
-			$this->get_container()->make( Options_Manager::class ),
-			'register_settings',
-		] );
-		add_action( 'parse_request', [
-			$this->get_container()->make( Request_Parser::class ),
-			'parse',
-		] );
+		add_action( 'init', [ $container['options_manager'], 'register_settings' ] );
+		add_action( 'init', [ $container['rewrite_manager'], 'register_rewrites' ] );
 
-		$injector = $this->get_container()->make( Hashid_Injector::class );
+		add_action( 'parse_request', [ $container['request_parser'], 'parse' ] );
+	}
+
+	/**
+	 * Provider-specific, deferred boot logic. The request parser and hashid injector
+	 * need to be instantiated after the options manager "register_settings" method
+	 * has been called during the init hook in order for defaults to be applied.
+	 *
+	 * @param  Container $container The plugin container instance.
+	 *
+	 * @return void
+	 */
+	public function deferred_boot( Container $container ) {
+		add_action( 'parse_request', [ $container['request_parser'], 'parse' ] );
+
+		$injector = $container['hashid_injector'];
 
 		add_filter( 'pre_post_link', [ $injector, 'inject' ], 10, 2 );
 		add_filter( 'post_type_link', [ $injector, 'inject' ], 10, 2 );
@@ -47,24 +53,31 @@ class Plugin_Provider extends Abstract_Bootable_Service_Provider {
 	/**
 	 * Provider specific registration logic.
 	 *
+	 * @param  Container $container The plugin container instance.
+	 *
 	 * @return void
 	 */
-	public function register() {
-		$this->get_container()->singleton( Hashid_Injector::class );
+	public function register( Container $container ) {
+		$container['hashid_injector'] = function( Container $c ) {
+			return new Hashid_Injector( $c['options_manager'], $c['hashids'] );
+		};
 
-		$this->get_container()->singleton(
-			Key_Value_Store_Interface::class,
-			Options_Store::class
-		);
+		$container['options_prefix'] = 'wp_hashids';
 
-		$this->get_container()->singleton( Options_Manager::class );
+		$container['options_store'] = function( Container $c ) {
+			return new Options_Store( $c['options_prefix'] );
+		};
 
-		$this->get_container()->when( Options_Store::class )
-			->needs( '$prefix' )
-			->give( 'wp_hashids' );
+		$container['options_manager'] = function( Container $c ) {
+			return new Options_Manager( $c['options_store'] );
+		};
 
-		$this->get_container()->singleton( Request_Parser::class );
+		$container['request_parser'] = function( Container $c ) {
+			return new Request_Parser( $c['hashids'] );
+		};
 
-		$this->get_container()->singleton( Rewrite_Manager::class );
+		$container['rewrite_manager'] = function( Container $c ) {
+			return new Rewrite_Manager( $c['options_manager'] );
+		};
 	}
 }

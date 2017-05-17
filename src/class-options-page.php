@@ -3,11 +3,13 @@
  * Options_Page class.
  *
  * @package wp-hashids
+ *
+ * @todo  Disable individual options inputs if their corresponding constant is defined.
  */
 
 namespace WP_Hashids;
 
-use Metis\View\Template_Interface;
+use League\Plates\Engine;
 
 /**
  * Defines the options page class.
@@ -21,24 +23,21 @@ class Options_Page {
 	protected $manager;
 
 	/**
-	 * Template instance.
+	 * Plates engine instance.
 	 *
-	 * @var Template_Interface
+	 * @var Engine
 	 */
-	protected $view;
+	protected $template;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param Options_Manager    $manager Options manager instance.
-	 * @param Template_Interface $view    Template instance.
+	 * @param Options_Manager $manager  Options manager instance.
+	 * @param Engine          $template Plates engine instance.
 	 */
-	public function __construct(
-		Options_Manager $manager,
-		Template_Interface $view
-	) {
+	public function __construct( Options_Manager $manager, Engine $template ) {
 		$this->manager = $manager;
-		$this->view = $view;
+		$this->template = $template;
 	}
 
 	/**
@@ -53,7 +52,7 @@ class Options_Page {
 			'manage_options',
 			'wp-hashids',
 			function() {
-				$this->view->output( 'option-page', [
+				echo $this->template->render( 'option-page', [
 					'group' => 'wp_hashids_group',
 					'page' => 'wp-hashids',
 				] );
@@ -71,7 +70,7 @@ class Options_Page {
 			'wp_hashids',
 			'Configure WP Hashids',
 			function() {
-				$this->view->output( 'option-section' );
+				echo $this->template->render( 'option-section' );
 			},
 			'wp-hashids'
 		);
@@ -92,7 +91,10 @@ class Options_Page {
 					];
 				}
 
-				$this->view->output( 'option-alphabet', compact( 'options' ) );
+				echo $this->template->render(
+					'option-alphabet',
+					compact( 'options' )
+				);
 			},
 			'wp-hashids',
 			'wp_hashids'
@@ -102,7 +104,7 @@ class Options_Page {
 			'wp_hashids_min_length',
 			'Minimum Length',
 			function() {
-				$this->view->output( 'option-min-length', [
+				echo $this->template->render( 'option-min-length', [
 					'value' => $this->manager->min_length(),
 				] );
 			},
@@ -114,7 +116,7 @@ class Options_Page {
 			'wp_hashids_salt',
 			'Hashids Salt',
 			function() {
-				$this->view->output( 'option-salt', [
+				echo $this->template->render( 'option-salt', [
 					'value' => $this->manager->salt(),
 				] );
 			},

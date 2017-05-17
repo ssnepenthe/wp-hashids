@@ -29,6 +29,31 @@ function _wph_require_if_exists( $file ) {
 
 _wph_require_if_exists( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
 
+/**
+ * Plugin instance getter.
+ *
+ * @return WP_Hashids\Plugin
+ */
+function wph_instance() {
+	static $instance = null;
+
+	if ( is_null( $instance ) ) {
+		$instance = new WP_Hashids\Plugin( [
+			'dir' => __DIR__,
+			'file' => __FILE__,
+			'name' => 'WP Hashids',
+			'version' => '0.1.0',
+		] );
+
+		$instance->register( new WP_Hashids\Admin_Provider );
+		$instance->register( new WP_Hashids\Hashids_Provider );
+		$instance->register( new WP_Hashids\Plates_Provider );
+		$instance->register( new WP_Hashids\Plugin_Provider );
+	}
+
+	return $instance;
+}
+
 $wph_checker = WP_Requirements\Plugin_Checker::make( 'WP Hashids', __FILE__ )
 	// Uses scalar type hints, depends on ssnepenthe/metis.
 	->php_at_least( '7.0' )
@@ -42,13 +67,8 @@ $wph_checker = WP_Requirements\Plugin_Checker::make( 'WP Hashids', __FILE__ )
 	}, 'One of the BCMath or GMP extensions is required' );
 
 if ( $wph_checker->requirements_met() ) {
-	$wph_plugin = new Metis\Package( [
-		'Metis\\View\\View_Provider',
-		'WP_Hashids\\Admin_Provider',
-		'WP_Hashids\\Hashids_Provider',
-		'WP_Hashids\\Plugin_Provider',
-	] );
-	$wph_plugin->init();
+	add_action( 'plugins_loaded', [ wph_instance(), 'boot' ] );
+	add_action( 'init', [ wph_instance(), 'deferred_boot' ], 99 );
 } else {
 	$wph_checker->deactivate_and_notify();
 }

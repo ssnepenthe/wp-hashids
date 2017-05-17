@@ -83,36 +83,36 @@ abstract class WPH_Rewrite_Test_Case extends WP_UnitTestCase {
 			'post' => [
 				[
 					'post' => $post_one,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $post_one->ID ),
 				],
 				[
 					'post' => $post_two,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $post_two->ID ),
 				],
 			],
 			'one' => [
 				[
 					'post' => $one_one,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $one_one->ID ),
 				],
 				[
 					'post' => $one_two,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $one_two->ID ),
 				],
 			],
 			'two' => [
 				[
 					'post' => $two_one,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $two_one->ID ),
 				],
 				[
 					'post' => $two_two,
-					'hashid' => \Metis\app( HashidsInterface::class )
+					'hashid' => wph_instance()['hashids']
 						->encode( $two_two->ID ),
 				],
 			],
