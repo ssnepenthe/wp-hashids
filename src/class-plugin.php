@@ -48,6 +48,19 @@ class Plugin extends Container {
 	}
 
 	/**
+	 * Call deactivate on all pending preoviders.
+	 *
+	 * @return void
+	 */
+	public function deactivate() {
+		foreach ( $this->providers as $provider ) {
+			if ( method_exists( $provider, 'deactivate' ) ) {
+				$provider->deactivate( $this );
+			}
+		}
+	}
+
+	/**
 	 * Register a service provider with the container.
 	 *
 	 * @param  ServiceProviderInterface $provider ServiceProviderInterface instance.

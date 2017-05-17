@@ -84,6 +84,11 @@ function _wph_init() {
 		return $checker->deactivate_and_notify();
 	}
 
+	register_deactivation_hook(
+		_wph_instance()['file'],
+		[ _wph_instance(), 'deactivate' ]
+	);
+
 	add_action( 'plugins_loaded', [ _wph_instance(), 'boot' ] );
 	add_action( 'init', [ _wph_instance(), 'boot' ], 99 );
 

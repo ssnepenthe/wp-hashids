@@ -31,6 +31,25 @@ class Plugin_Provider implements ServiceProviderInterface {
 	}
 
 	/**
+	 * Remove the rewrite tag from site permalink structure on deactivation.
+	 *
+	 * @param  Container $container The plugin container instance.
+	 *
+	 * @return void
+	 */
+	public function deactivate( Container $container ) {
+		global $wp_rewrite;
+
+		$wp_rewrite->set_permalink_structure( str_replace(
+			$container['options_manager']->rewrite_tag(),
+			'%post_id%',
+			$wp_rewrite->permalink_structure
+		) );
+
+		$wp_rewrite->flush_rules();
+	}
+
+	/**
 	 * Provider-specific, deferred boot logic. The request parser and hashid injector
 	 * need to be instantiated after the options manager "register_settings" method
 	 * has been called during the init hook in order for defaults to be applied.
