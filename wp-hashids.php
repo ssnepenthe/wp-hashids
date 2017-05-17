@@ -21,7 +21,7 @@
  *
  * @param  string $file Path to the file you wish to check.
  */
-function __wph_require_if_exists( $file ) {
+function _wph_require_if_exists( $file ) {
 	if ( file_exists( $file ) ) {
 		require_once $file;
 	}
@@ -32,7 +32,7 @@ function __wph_require_if_exists( $file ) {
  *
  * @return WP_Hashids\Plugin
  */
-function __wph_instance() {
+function _wph_instance() {
 	static $instance = null;
 
 	if ( is_null( $instance ) ) {
@@ -52,7 +52,7 @@ function __wph_instance() {
 	return $instance;
 }
 
-function __wph_init() {
+function _wph_init() {
 	static $initialized = false;
 
 	if ( $initialized ) {
@@ -79,11 +79,11 @@ function __wph_init() {
 		return $checker->deactivate_and_notify();
 	}
 
-	add_action( 'plugins_loaded', [ __wph_instance(), 'boot' ] );
-	add_action( 'init', [ __wph_instance(), 'boot' ], 99 );
+	add_action( 'plugins_loaded', [ _wph_instance(), 'boot' ] );
+	add_action( 'init', [ _wph_instance(), 'boot' ], 99 );
 
 	$initialized = true;
 }
 
-__wph_require_if_exists( __DIR__ . '/vendor/autoload.php' );
-__wph_init();
+_wph_require_if_exists( __DIR__ . '/vendor/autoload.php' );
+_wph_init();
