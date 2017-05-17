@@ -109,7 +109,7 @@ class Request_Parser {
 
 	/**
 	 * Set the appropriate query var in the instance that a request for a page was
-	 * accisdentally caught against one of the WP Hashids rewrite rules.
+	 * accidentally caught against one of the WP Hashids rewrite rules.
 	 *
 	 * @param  WP $wp WP instance.
 	 *
