@@ -21,20 +21,18 @@
  *
  * @param  string $file Path to the file you wish to check.
  */
-function _wph_require_if_exists( $file ) {
+function __wph_require_if_exists( $file ) {
 	if ( file_exists( $file ) ) {
 		require_once $file;
 	}
 }
-
-_wph_require_if_exists( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
 
 /**
  * Plugin instance getter.
  *
  * @return WP_Hashids\Plugin
  */
-function wph_instance() {
+function __wph_instance() {
 	static $instance = null;
 
 	if ( is_null( $instance ) ) {
@@ -54,23 +52,38 @@ function wph_instance() {
 	return $instance;
 }
 
-$wph_checker = WP_Requirements\Plugin_Checker::make( 'WP Hashids', __FILE__ )
-	// Uses scalar type hints, depends on ssnepenthe/metis.
-	->php_at_least( '7.0' )
+function __wph_init() {
+	static $initialized = false;
+
+	if ( $initialized ) {
+		return;
+	}
+
+	$checker = new WP_Requirements\Plugin_Checker( 'WP Hashids', __FILE__ );
+
+	// Uses scalar type hints.
+	$checker->php_at_least( '7.0' );
+
 	// Uses register_setting() with args array.
-	->wp_at_least( '4.7' )
+	$checker->wp_at_least( '4.7' );
+
 	// Hashids lib must be loaded.
-	->class_exists( 'Hashids\\Hashids' )
+	$checker->class_exists( 'Hashids\\Hashids' );
+
 	// Hashids lib requires one of bcmath or gmp.
-	->add_check( function() {
+	$checker->add_check( function() {
 		return function_exists( 'bcadd' ) || function_exists( 'gmp_add' );
 	}, 'One of the BCMath or GMP extensions is required' );
 
-if ( $wph_checker->requirements_met() ) {
-	add_action( 'plugins_loaded', [ wph_instance(), 'boot' ] );
-	add_action( 'init', [ wph_instance(), 'deferred_boot' ], 99 );
-} else {
-	$wph_checker->deactivate_and_notify();
+	if ( ! $checker->requirements_met() ) {
+		return $checker->deactivate_and_notify();
+	}
+
+	add_action( 'plugins_loaded', [ __wph_instance(), 'boot' ] );
+	add_action( 'init', [ __wph_instance(), 'boot' ], 99 );
+
+	$initialized = true;
 }
 
-unset( $wph_checker, $wph_plugin );
+__wph_require_if_exists( __DIR__ . '/vendor/autoload.php' );
+__wph_init();

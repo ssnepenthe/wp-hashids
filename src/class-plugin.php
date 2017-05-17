@@ -14,19 +14,8 @@ use Pimple\ServiceProviderInterface;
  * Defines the plugin class.
  */
 class Plugin extends Container {
-	/**
-	 * Stack of providers with a boot step.
-	 *
-	 * @var ServiceProviderInterface[]
-	 */
-	protected $boot_queue = array();
-
-	/**
-	 * Stack of providers with a late boot step.
-	 *
-	 * @var ServiceProviderInterface[]
-	 */
-	protected $deferred_boot_queue = array();
+	protected $boot_calls = 0;
+	protected $providers = array();
 
 	/**
 	 * Call boot on all pending providers.
@@ -34,19 +23,16 @@ class Plugin extends Container {
 	 * @return void
 	 */
 	public function boot() {
-		while ( count( $this->boot_queue ) ) {
-			array_shift( $this->boot_queue )->boot( $this );
+		if ( 1 < $this->boot_calls ) {
+			return;
 		}
-	}
 
-	/**
-	 * Call deferred boot on all pending providers.
-	 *
-	 * @return void
-	 */
-	public function deferred_boot() {
-		while ( count( $this->deferred_boot_queue ) ) {
-			array_shift( $this->deferred_boot_queue )->deferred_boot( $this );
+		$boot_method = $this->boot_calls++ ? 'deferred_boot' : 'boot';
+
+		foreach ( $this->providers as $provider ) {
+			if ( method_exists( $provider, $boot_method ) ) {
+				$provider->{$boot_method}( $this );
+			}
 		}
 	}
 
@@ -64,13 +50,7 @@ class Plugin extends Container {
 	) {
 		parent::register( $provider, $values );
 
-		if ( method_exists( $provider, 'boot' ) ) {
-			$this->boot_queue[] = $provider;
-		}
-
-		if ( method_exists( $provider, 'deferred_boot' ) ) {
-			$this->deferred_boot_queue[] = $provider;
-		}
+		$this->providers[] = $provider;
 
 		return $this;
 	}
