@@ -14,7 +14,18 @@ use Pimple\ServiceProviderInterface;
  * Defines the plugin class.
  */
 class Plugin extends Container {
+	/**
+	 * Counter for tracking the number of calls to ->boot().
+	 *
+	 * @var integer
+	 */
 	protected $boot_calls = 0;
+
+	/**
+	 * List of registered providers.
+	 *
+	 * @var ServiceProviderInterface[]
+	 */
 	protected $providers = array();
 
 	/**

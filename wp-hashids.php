@@ -52,6 +52,11 @@ function _wph_instance() {
 	return $instance;
 }
 
+/**
+ * Plugin initialization function.
+ *
+ * @return void
+ */
 function _wph_init() {
 	static $initialized = false;
 
