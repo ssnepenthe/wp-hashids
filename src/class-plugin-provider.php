@@ -28,8 +28,6 @@ class Plugin_Provider implements ServiceProviderInterface {
 		// not be available from the REST API...
 		add_action( 'init', [ $container['options_manager'], 'register_settings' ] );
 		add_action( 'init', [ $container['rewrite_manager'], 'register_rewrites' ] );
-
-		add_action( 'parse_request', [ $container['request_parser'], 'parse' ] );
 	}
 
 	/**
