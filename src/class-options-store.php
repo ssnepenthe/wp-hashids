@@ -10,7 +10,7 @@ namespace WP_Hashids;
 /**
  * Defines the options store class.
  */
-class Options_Store implements Key_Value_Store_Interface {
+class Options_Store {
 	/**
 	 * Prefix to prepend to option keys.
 	 *

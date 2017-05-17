@@ -49,18 +49,18 @@ class Options_Manager {
 	];
 
 	/**
-	 * Key-value store instance.
+	 * Options store instance.
 	 *
-	 * @var Key_Value_Store_Interface
+	 * @var Options_Store
 	 */
 	protected $store;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param Key_Value_Store_Interface $store Key-value store instance.
+	 * @param Options_Store $store Options store instance.
 	 */
-	public function __construct( Key_Value_Store_Interface $store ) {
+	public function __construct( Options_Store $store ) {
 		$this->store = $store;
 	}
 
