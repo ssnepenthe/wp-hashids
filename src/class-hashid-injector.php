@@ -10,6 +10,10 @@ namespace WP_Hashids;
 use WP_Post;
 use Hashids\HashidsInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the hashid inject class.
  */

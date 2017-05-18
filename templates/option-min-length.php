@@ -7,6 +7,10 @@
  * @todo Placeholder?
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?><input
 	class="small-text"
 	id="wp_hashids_min_length"

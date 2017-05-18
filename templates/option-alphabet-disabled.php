@@ -5,6 +5,10 @@
  * @package wp-hashids
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?>Alphabet set to <kbd><?php echo esc_html( $current ) ?> (<?php echo esc_html( $regex ) ?>)</kbd> via constant.
 
 <input

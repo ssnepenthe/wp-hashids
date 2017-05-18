@@ -11,6 +11,10 @@ namespace WP_Hashids;
 
 use League\Plates\Engine;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the options page class.
  */

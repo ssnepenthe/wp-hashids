@@ -12,6 +12,10 @@ use WP_Post;
 use WP_Post_Type;
 use Hashids\HashidsInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the request parser class.
  */

@@ -7,6 +7,10 @@
 
 namespace WP_Hashids;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the salt generator class.
  */

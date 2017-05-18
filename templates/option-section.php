@@ -5,6 +5,10 @@
  * @package wp-hashids
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?><p>
 	Configure the settings for the WP Hashids plugin here. Sensible defaults have been set for already.
 </p>

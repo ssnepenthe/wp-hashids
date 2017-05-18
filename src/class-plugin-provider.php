@@ -12,6 +12,10 @@ use WP_Post;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the plugin provider class.
  */

@@ -11,6 +11,10 @@ use Hashids\Hashids;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the hashids provider class.
  */

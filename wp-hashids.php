@@ -16,6 +16,10 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Require a file (once) if it exists.
  *

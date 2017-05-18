@@ -5,6 +5,10 @@
  * @package wp-hashids
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?><fieldset>
 	<legend class="screen-reader-text">
 		Hashids Alphabet

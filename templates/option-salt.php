@@ -8,6 +8,10 @@
  *       Button to regenerate random salt?
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?><input
 	class="large-text"
 	id="wp_hashids_salt"

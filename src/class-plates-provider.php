@@ -11,6 +11,10 @@ use Pimple\Container;
 use League\Plates\Engine;
 use Pimple\ServiceProviderInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the plates provider class.
  */

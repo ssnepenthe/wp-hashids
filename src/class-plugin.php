@@ -10,6 +10,10 @@ namespace WP_Hashids;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 /**
  * Defines the plugin class.
  */

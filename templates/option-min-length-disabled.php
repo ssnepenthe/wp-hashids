@@ -5,6 +5,10 @@
  * @package wp-hashids
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die;
+}
+
 ?>Minimum length set to <kbd><?php echo esc_html( $value ) ?></kbd> via constant.
 
 <input
