@@ -14,7 +14,26 @@ class Options_Manager_Test extends WP_UnitTestCase {
 
 		$salt = $manager->salt();
 
+		$this->assertTrue( is_string( $salt ) );
+		$this->assertSame( 64, strlen( $salt ) );
 		$this->assertEquals( $salt, get_option( 'pfx_salt' ) );
+	}
+
+	/** @test */
+	function it_can_sanitize_salt() {
+		$manager = new Options_Manager( new Options_Store( 'pfx' ) );
+
+		// Salt is cast to string.
+		$this->assertSame( '0', $manager->sanitize_salt( 0 ) );
+		$this->assertSame( '', $manager->sanitize_salt( false ) );
+
+		// Except null value which triggers salt generator.
+		$salt = $manager->sanitize_salt( null );
+		$this->assertTrue( is_string( $salt ) );
+		$this->assertSame( 64, strlen( $salt ) );
+
+		// Otherwise returned as passed.
+		$this->assertEquals( 'test', $manager->sanitize_salt( 'test' ) );
 	}
 
 	/** @test */

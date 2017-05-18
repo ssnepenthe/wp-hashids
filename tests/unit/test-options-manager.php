@@ -100,31 +100,6 @@ class Options_Manager_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/** @test */
-	function it_can_get_the_salt() {
-		$store = Mockery::mock( Options_Store::class )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( null )
-			->shouldReceive( 'set' )
-			->once()
-			->andReturn( true )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( 'test-salt' )
-			->mock();
-		$manager = new Options_Manager( $store );
-
-		// Not in store so falls back to default and automatically saves.
-		// @todo As written it depends on Salt_Generator which cannot be mocked.
-		$salt = $manager->salt();
-		$this->assertTrue( is_string( $salt ) );
-		$this->assertSame( 64, strlen( $salt ) );
-
-		// In store - maps to actual regex.
-		$this->assertEquals( 'test-salt', $manager->salt() );
-	}
-
-	/** @test */
 	function it_can_sanitize_alphabet() {
 		$manager = new Options_Manager( Mockery::mock( Options_Store::class ) );
 
@@ -147,22 +122,5 @@ class Options_Manager_Test extends PHPUnit_Framework_TestCase {
 			$manager->sanitize_alphabet( 'uppernumber' )
 		);
 		$this->assertEquals( 'all', $manager->sanitize_alphabet( 'all' ) );
-	}
-
-	/** @test */
-	function it_can_sanitize_salt() {
-		$manager = new Options_Manager( Mockery::mock( Options_Store::class ) );
-
-		// Salt is cast to string.
-		$this->assertSame( '0', $manager->sanitize_salt( 0 ) );
-		$this->assertSame( '', $manager->sanitize_salt( false ) );
-
-		// Except null value which triggers salt generator.
-		$salt = $manager->sanitize_salt( null );
-		$this->assertTrue( is_string( $salt ) );
-		$this->assertSame( 64, strlen( $salt ) );
-
-		// Otherwise returned as passed.
-		$this->assertEquals( 'test', $manager->sanitize_salt( 'test' ) );
 	}
 }
