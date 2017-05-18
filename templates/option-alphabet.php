@@ -7,21 +7,21 @@
 
 ?><fieldset>
 	<legend class="screen-reader-text">
-		<!-- @todo -->
+		Hashids Alphabet
 	</legend>
-	<?php foreach ( $options as $option ) : ?>
-			<label>
-				<input
-					<?php checked( $option['checked'] ) ?>
-					id="wp_hashids_alphabet_<?php echo esc_attr( $option['value'] ) ?>"
-					name="wp_hashids_alphabet"
-					type="radio"
-					value="<?php echo esc_attr( $option['value'] ) ?>"
-				>
+	<?php foreach ( $options as $value => $details ) : ?>
+		<label>
+			<input
+				<?php checked( $current === $details['alphabet'] ) ?>
+				id="wp_hashids_alphabet_<?php echo esc_attr( $value ) ?>"
+				name="wp_hashids_alphabet"
+				type="radio"
+				value="<?php echo esc_attr( $value ) ?>"
+			>
 
-				<?php echo esc_html( $option['label'] ) ?> (<?php echo esc_html( $option['regex'] ) ?>)
-			</label>
+			<?php echo esc_html( $details['label'] ) ?> (<?php echo esc_html( $details['regex'] ) ?>)
+		</label>
 
-			<br>
+		<br>
 	<?php endforeach ?>
 </fieldset>

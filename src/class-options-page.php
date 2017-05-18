@@ -79,22 +79,29 @@ class Options_Page {
 			'wp_hashids_alphabet',
 			'Alphabet',
 			function() {
-				$options = [];
 				$current = $this->manager->alphabet();
 
-				foreach ( Options_Manager::ALPHABET_MAP as $value => $details ) {
-					$options[] = [
-						'checked' => $current === $details['alphabet'],
-						'label' => $details['label'],
-						'regex' => $details['regex'],
-						'value' => $value,
-					];
-				}
+				if ( defined( 'WP_HASHIDS_ALPHABET' ) ) {
+					$alphabet = array_filter(
+						Options_Manager::ALPHABET_MAP,
+						function( $alpha ) use ( $current ) {
+							return $current === $alpha['alphabet'];
+						}
+					);
 
-				echo $this->template->render(
-					'option-alphabet',
-					compact( 'options' )
-				);
+					$values = reset( $alphabet );
+					$key = key( $alphabet );
+
+					echo $this->template->render( 'option-alphabet-disabled', [
+						'current' => $key,
+						'regex' => $values['regex'],
+					] );
+				} else {
+					echo $this->template->render( 'option-alphabet', [
+						'current' => $current,
+						'options' => Options_Manager::ALPHABET_MAP,
+					] );
+				}
 			},
 			'wp-hashids',
 			'wp_hashids'
@@ -104,7 +111,13 @@ class Options_Page {
 			'wp_hashids_min_length',
 			'Minimum Length',
 			function() {
-				echo $this->template->render( 'option-min-length', [
+				$template = 'option-min-length';
+
+				if ( defined( 'WP_HASHIDS_MIN_LENGTH' ) ) {
+					$template .= '-disabled';
+				}
+
+				echo $this->template->render( $template, [
 					'value' => $this->manager->min_length(),
 				] );
 			},
@@ -116,7 +129,13 @@ class Options_Page {
 			'wp_hashids_salt',
 			'Hashids Salt',
 			function() {
-				echo $this->template->render( 'option-salt', [
+				$template = 'option-salt';
+
+				if ( defined( 'WP_HASHIDS_SALT' ) ) {
+					$template .= '-disabled';
+				}
+
+				echo $this->template->render( $template, [
 					'value' => $this->manager->salt(),
 				] );
 			},
