@@ -3,8 +3,6 @@
  * Options_Page class.
  *
  * @package wp-hashids
- *
- * @todo  Disable individual options inputs if their corresponding constant is defined.
  */
 
 namespace WP_Hashids;

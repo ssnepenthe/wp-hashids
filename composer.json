@@ -1,6 +1,6 @@
 {
     "name": "ssnepenthe/wp-hashids",
-    "description": "@todo",
+    "description": "A Hashids implementation for WordPress",
     "type": "wordpress-plugin",
     "homepage": "https://github.com/ssnepenthe/wp-hashids",
     "license": "GPL-2.0",
