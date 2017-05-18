@@ -79,6 +79,12 @@ function _wph_init() {
 	// Hashids lib must be loaded.
 	$checker->class_exists( 'Hashids\\Hashids' );
 
+	// Plates lib must be loaded.
+	$checker->class_exists( 'League\\Plates\\Engine' );
+
+	// Pimple lib must be loaded.
+	$checker->class_exists( 'Pimple\\Container' );
+
 	// Hashids lib requires one of bcmath or gmp.
 	$checker->add_check( function() {
 		return function_exists( 'bcadd' ) || function_exists( 'gmp_add' );
