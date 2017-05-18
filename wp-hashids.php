@@ -66,8 +66,8 @@ function _wph_init() {
 
 	$checker = new WP_Requirements\Plugin_Checker( 'WP Hashids', __FILE__ );
 
-	// Uses scalar type hints.
-	$checker->php_at_least( '7.0' );
+	// Constant arrays.
+	$checker->php_at_least( '5.6' );
 
 	// Uses register_setting() with args array.
 	$checker->wp_at_least( '4.7' );

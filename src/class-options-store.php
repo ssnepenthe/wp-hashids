@@ -23,8 +23,8 @@ class Options_Store {
 	 *
 	 * @param string $prefix Prefix to prepend to option keys.
 	 */
-	public function __construct( string $prefix = '' ) {
-		$this->prefix = $prefix;
+	public function __construct( $prefix = '' ) {
+		$this->prefix = (string) $prefix;
 	}
 
 	/**
@@ -35,7 +35,7 @@ class Options_Store {
 	 *
 	 * @return boolean
 	 */
-	public function add( string $key, $value ) : bool {
+	public function add( $key, $value ) {
 		return add_option( $this->option_key( $key ), $value );
 	}
 
@@ -46,7 +46,7 @@ class Options_Store {
 	 *
 	 * @return boolean
 	 */
-	public function delete( string $key ) : bool {
+	public function delete( $key ) {
 		return delete_option( $this->option_key( $key ) );
 	}
 
@@ -57,7 +57,7 @@ class Options_Store {
 	 *
 	 * @return mixed       Option value or null if not set.
 	 */
-	public function get( string $key ) {
+	public function get( $key ) {
 		$value = get_option( $this->option_key( $key ) );
 
 		if ( false === $value ) {
@@ -75,7 +75,7 @@ class Options_Store {
 	 *
 	 * @return boolean
 	 */
-	public function set( string $key, $value ) : bool {
+	public function set( $key, $value ) {
 		return update_option( $this->option_key( $key ), $value );
 	}
 
@@ -86,7 +86,9 @@ class Options_Store {
 	 *
 	 * @return string
 	 */
-	protected function option_key( string $key ) : string {
+	protected function option_key( $key ) {
+		$key = (string) $key;
+
 		if ( $this->prefix ) {
 			$key = "{$this->prefix}_{$key}";
 		}

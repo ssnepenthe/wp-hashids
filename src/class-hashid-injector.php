@@ -50,7 +50,7 @@ class Hashid_Injector {
 	 *
 	 * @return string
 	 */
-	public function inject( string $link, WP_Post $post ) : string {
+	public function inject( $link, WP_Post $post ) {
 		return str_replace(
 			$this->manager->rewrite_tag(),
 			$this->hashids->encode( $post->ID ),

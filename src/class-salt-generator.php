@@ -21,9 +21,9 @@ class Salt_Generator {
 	 *
 	 * @return string
 	 */
-	public function generate( int $length = 64 ) : string {
+	public function generate( $length = 64 ) {
 		// Arbitrary minimum length of 10 characters.
-		$length = max( 10, $length );
+		$length = max( 10, (int) $length );
 
 		// Maximum length of 64 characters to match WP.org API.
 		$length = min( $length, 64 );
@@ -50,7 +50,7 @@ class Salt_Generator {
 	 *
 	 * @return string
 	 */
-	protected function fetch_salt( int $length ) : string {
+	protected function fetch_salt( $length ) {
 		$salt = '';
 		$salts = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
 
@@ -73,7 +73,7 @@ class Salt_Generator {
 	 *
 	 * @return string
 	 */
-	protected function generate_salt( int $length ) : string {
+	protected function generate_salt( $length ) {
 		$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
 		$salt = '';
 

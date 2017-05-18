@@ -17,18 +17,21 @@ cache:
 
 matrix:
   allow_failures:
+    - php: nightly
     - env: WP_VERSION=trunk
   fast_finish: true
   include:
-    - php: 7.1
+    - php: nightly
       env: WP_VERSION=latest
     - php: 7.1
-      env: WP_VERSION=trunk
-    - php: 7.0
       env: WP_VERSION=latest
     - php: 7.0
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=latest
+    - php: 5.6
       env: WP_VERSION=trunk
-    - php: 7.0
+    - php: 5.6
       env: WP_TRAVISCI=phpcs
 
 install: composer install --no-interaction --optimize-autoloader --prefer-dist

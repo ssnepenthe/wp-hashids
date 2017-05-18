@@ -54,7 +54,7 @@ class Admin_Provider implements ServiceProviderInterface {
 	 *
 	 * @return boolean
 	 */
-	protected function all_config_constants_are_defined() : bool {
+	protected function all_config_constants_are_defined() {
 		return defined( 'WP_HASHIDS_ALPHABET' )
 			&& defined( 'WP_HASHIDS_MIN_LENGTH' )
 			&& defined( 'WP_HASHIDS_SALT' );

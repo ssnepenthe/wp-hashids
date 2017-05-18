@@ -69,7 +69,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function alphabet() : string {
+	public function alphabet() {
 		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
 			? WP_HASHIDS_ALPHABET
 			// If not set, will be "all" as set in ->register_settings().
@@ -85,7 +85,7 @@ class Options_Manager {
 	 *
 	 * @return integer
 	 */
-	public function min_length() : int {
+	public function min_length() {
 		$min_length = defined( 'WP_HASHIDS_MIN_LENGTH' )
 			? WP_HASHIDS_MIN_LENGTH
 			// If not set, will be 6 as set in ->register_settings().
@@ -99,7 +99,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function regex() : string {
+	public function regex() {
 		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
 			? WP_HASHIDS_ALPHABET
 			// If not set, will be "all" as set in ->register_settings().
@@ -140,7 +140,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function rewrite_tag() : string {
+	public function rewrite_tag() {
 		return '%hashid%';
 	}
 
@@ -150,7 +150,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function salt() : string {
+	public function salt() {
 		$needs_save = false;
 		$salt = defined( 'WP_HASHIDS_SALT' )
 			? WP_HASHIDS_SALT
@@ -178,7 +178,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function sanitize_alphabet( $alphabet ) : string {
+	public function sanitize_alphabet( $alphabet ) {
 		if ( ! $this->is_valid_alphabet( $alphabet ) ) {
 			$alphabet = 'all';
 		}
@@ -193,7 +193,7 @@ class Options_Manager {
 	 *
 	 * @return string
 	 */
-	public function sanitize_salt( $salt ) : string {
+	public function sanitize_salt( $salt ) {
 		if ( is_null( $salt ) ) {
 			// @todo
 			$salt = ( new Salt_Generator )->generate();
@@ -209,7 +209,7 @@ class Options_Manager {
 	 *
 	 * @return boolean
 	 */
-	protected function is_valid_alphabet( $alphabet ) : bool {
+	protected function is_valid_alphabet( $alphabet ) {
 		return in_array( $alphabet, array_keys( self::ALPHABET_MAP ), true );
 	}
 }
