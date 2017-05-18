@@ -1,6 +1,6 @@
 <?php
 
-class Salt_Generator_Test extends PHPUnit_Framework_TestCase {
+class Salt_Generator_Test extends WP_UnitTestCase {
 	/** @test */
 	function it_can_generate_a_salt_of_requested_length() {
 		$salt_gen = new WP_Hashids\Salt_Generator;
