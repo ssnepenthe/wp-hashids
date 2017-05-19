@@ -33,7 +33,7 @@ If you wish to set custom values, there are two methods for doing so:
 
 The following constants can be used for configuration:
 
-* `WP_HASHIDS_ALPHABET` - valid options are `lower`, `upper`, `lowerupper`, `lowernumber`, `uppernumber`, and `all`.
+* `WP_HASHIDS_ALPHABET` - valid options are `lower`, `upper`, `lowerupper`, `lowernumber`, `uppernumber`, and `all`. You will need to manually flush rewrite rules after changing this constant by going to `settings > permalinks`.
 * `WP_HASHIDS_MIN_LENGTH` - can be any integer >= 0.
 * `WP_HASHIDS_SALT` - should be a unique string to ensure hashids are unique to your site.
 
