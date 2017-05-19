@@ -74,12 +74,8 @@ class Options_Manager {
 	 * @return string
 	 */
 	public function alphabet() {
-		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
-			? WP_HASHIDS_ALPHABET
-			// If not set, will be "all" as set in ->register_settings().
-			: $this->store->get( 'alphabet' );
-
-		$alphabet = $this->sanitize_alphabet( $alphabet );
+		// If not set, will be "all" as set in ->register_settings().
+		$alphabet = $this->sanitize_alphabet( $this->store->get( 'alphabet' ) );
 
 		return self::ALPHABET_MAP[ $alphabet ]['alphabet'];
 	}
@@ -90,12 +86,8 @@ class Options_Manager {
 	 * @return integer
 	 */
 	public function min_length() {
-		$min_length = defined( 'WP_HASHIDS_MIN_LENGTH' )
-			? WP_HASHIDS_MIN_LENGTH
-			// If not set, will be 6 as set in ->register_settings().
-			: $this->store->get( 'min_length' );
-
-		return absint( $min_length );
+		// If not set, will be 6 as set in ->register_settings().
+		return absint( $this->store->get( 'min_length' ) );
 	}
 
 	/**
@@ -104,12 +96,8 @@ class Options_Manager {
 	 * @return string
 	 */
 	public function regex() {
-		$alphabet = defined( 'WP_HASHIDS_ALPHABET' )
-			? WP_HASHIDS_ALPHABET
-			// If not set, will be "all" as set in ->register_settings().
-			: $this->store->get( 'alphabet' );
-
-		$alphabet = $this->sanitize_alphabet( $alphabet );
+		// If not set, will be "all" as set in ->register_settings().
+		$alphabet = $this->sanitize_alphabet( $this->store->get( 'alphabet' ) );
 
 		return self::ALPHABET_MAP[ $alphabet ]['regex'];
 	}
@@ -137,6 +125,31 @@ class Options_Manager {
 			'sanitize_callback' => [ $this, 'sanitize_salt' ],
 			'show_in_rest' => true,
 		] );
+	}
+
+	/**
+	 * Grab plugin settings from constants when they are defined.
+	 *
+	 * @param  mixed  $pre_option Option value before checking DB.
+	 * @param  string $option     The option key.
+	 *
+	 * @return mixed
+	 */
+	public function use_constants_when_defined( $pre_option, $option ) {
+		$constant = strtoupper( $option );
+
+		if ( ! defined( $constant ) ) {
+			return $pre_option;
+		}
+
+		$value = constant( $constant );
+
+		// If null we could get caught constantly regenerating the salt.
+		if ( false === $value || is_null( $value ) ) {
+			return $pre_option;
+		}
+
+		return $value;
 	}
 
 	/**
@@ -172,10 +185,9 @@ class Options_Manager {
 	 */
 	public function salt() {
 		$needs_save = false;
-		$salt = defined( 'WP_HASHIDS_SALT' )
-			? WP_HASHIDS_SALT
-			// If not set, will be null - there is no default.
-			: $this->store->get( 'salt' );
+
+		// If not set, will be null - there is no default.
+		$salt = $this->store->get( 'salt' );
 
 		// First run it will be null (non-existent in DB).
 		if ( is_null( $salt ) ) {

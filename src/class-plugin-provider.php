@@ -35,6 +35,15 @@ class Plugin_Provider implements ServiceProviderInterface {
 		add_action( 'init', [ $options_manager, 'register_settings' ] );
 		add_action( 'init', [ $container['rewrite_manager'], 'register_rewrites' ] );
 
+		foreach ( [ 'alphabet', 'min_length', 'salt' ] as $option ) {
+			add_filter(
+				"pre_option_wp_hashids_{$option}",
+				[ $options_manager, 'use_constants_when_defined' ],
+				10,
+				2
+			);
+		}
+
 		add_action(
 			"update_option_wp_hashids_alphabet",
 			[ $options_manager, 'flush_rewrites_on_save' ],
