@@ -45,7 +45,7 @@ class Plugin_Provider implements ServiceProviderInterface {
 		}
 
 		add_action(
-			"update_option_wp_hashids_alphabet",
+			'update_option_wp_hashids_alphabet',
 			[ $options_manager, 'flush_rewrites_on_save' ],
 			10,
 			2
