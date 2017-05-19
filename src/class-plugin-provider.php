@@ -28,10 +28,19 @@ class Plugin_Provider implements ServiceProviderInterface {
 	 * @return void
 	 */
 	public function boot( Container $container ) {
+		$options_manager = $container['options_manager'];
+
 		// Docs still recommend using the admin_init hook but then the options will
 		// not be available from the REST API...
-		add_action( 'init', [ $container['options_manager'], 'register_settings' ] );
+		add_action( 'init', [ $options_manager, 'register_settings' ] );
 		add_action( 'init', [ $container['rewrite_manager'], 'register_rewrites' ] );
+
+		add_action(
+			"update_option_wp_hashids_alphabet",
+			[ $options_manager, 'flush_rewrites_on_save' ],
+			10,
+			2
+		);
 	}
 
 	/**

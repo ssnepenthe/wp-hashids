@@ -140,6 +140,22 @@ class Options_Manager {
 	}
 
 	/**
+	 * Flush rewrite rules when the wp_hashids_alphabet option is updated.
+	 *
+	 * @param  string $old_value Previous alphabet option value.
+	 * @param  string $value     New alphabet option value.
+	 *
+	 * @return void
+	 */
+	public function flush_rewrites_on_save( $old_value, $value ) {
+		if ( $old_value === $value ) {
+			return;
+		}
+
+		delete_option( 'rewrite_rules' );
+	}
+
+	/**
 	 * Get the hashids rewrite tag.
 	 *
 	 * @return string
