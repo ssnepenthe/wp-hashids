@@ -32,11 +32,11 @@ class Admin_Provider implements ServiceProviderInterface {
 
 		add_action(
 			'admin_init',
-			[ $container['options_page'], 'register_sections_and_fields' ]
+			[ $container->proxy( 'options_page' ), 'register_sections_and_fields' ]
 		);
 		add_action(
 			'admin_menu',
-			[ $container['options_page'], 'register_page' ]
+			[ $container->proxy( 'options_page' ), 'register_page' ]
 		);
 	}
 

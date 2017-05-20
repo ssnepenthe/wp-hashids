@@ -102,7 +102,6 @@ function _wph_init() {
 	);
 
 	add_action( 'plugins_loaded', [ $instance, 'boot' ] );
-	add_action( 'init', [ $instance, 'boot' ], 99 );
 
 	$initialized = true;
 }

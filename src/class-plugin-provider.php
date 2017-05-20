@@ -50,6 +50,23 @@ class Plugin_Provider implements ServiceProviderInterface {
 			10,
 			2
 		);
+
+		add_action(
+			'parse_request',
+			[ $container->proxy( 'request_parser' ), 'parse' ]
+		);
+		add_filter(
+			'pre_post_link',
+			[ $container->proxy( 'hashid_injector' ), 'inject' ],
+			10,
+			2
+		);
+		add_filter(
+			'post_type_link',
+			[ $container->proxy( 'hashid_injector' ), 'inject' ],
+			10,
+			2
+		);
 	}
 
 	/**
@@ -69,24 +86,6 @@ class Plugin_Provider implements ServiceProviderInterface {
 		) );
 
 		$wp_rewrite->flush_rules();
-	}
-
-	/**
-	 * Provider-specific, deferred boot logic. The request parser and hashid injector
-	 * need to be instantiated after the options manager "register_settings" method
-	 * has been called during the init hook in order for defaults to be applied.
-	 *
-	 * @param  Container $container The plugin container instance.
-	 *
-	 * @return void
-	 */
-	public function deferred_boot( Container $container ) {
-		add_action( 'parse_request', [ $container['request_parser'], 'parse' ] );
-
-		$injector = $container['hashid_injector'];
-
-		add_filter( 'pre_post_link', [ $injector, 'inject' ], 10, 2 );
-		add_filter( 'post_type_link', [ $injector, 'inject' ], 10, 2 );
 	}
 
 	/**

@@ -19,13 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Plugin extends Container {
 	/**
-	 * Counter for tracking the number of calls to ->boot().
-	 *
-	 * @var integer
-	 */
-	protected $boot_calls = 0;
-
-	/**
 	 * List of registered providers.
 	 *
 	 * @var ServiceProviderInterface[]
@@ -33,20 +26,21 @@ class Plugin extends Container {
 	protected $providers = array();
 
 	/**
+	 * List of cached proxy objects.
+	 *
+	 * @var Service_Proxy[]
+	 */
+	protected $proxies = array();
+
+	/**
 	 * Call boot on all pending providers.
 	 *
 	 * @return void
 	 */
 	public function boot() {
-		if ( 1 < $this->boot_calls ) {
-			return;
-		}
-
-		$boot_method = $this->boot_calls++ ? 'deferred_boot' : 'boot';
-
 		foreach ( $this->providers as $provider ) {
-			if ( method_exists( $provider, $boot_method ) ) {
-				$provider->{$boot_method}( $this );
+			if ( method_exists( $provider, 'boot' ) ) {
+				$provider->boot( $this );
 			}
 		}
 	}
@@ -62,6 +56,23 @@ class Plugin extends Container {
 				$provider->deactivate( $this );
 			}
 		}
+	}
+
+	/**
+	 * Get a proxy wrapper for a given container entry.
+	 *
+	 * @param  string $key Container key.
+	 *
+	 * @return Service_Proxy
+	 */
+	public function proxy( $key ) {
+		if ( isset( $this->proxies[ $key ] ) ) {
+			return $this->proxies[ $key ];
+		}
+
+		$this->proxies[ $key ] = new Service_Proxy( $this, $key );
+
+		return $this->proxies[ $key ];
 	}
 
 	/**
