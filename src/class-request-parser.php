@@ -69,6 +69,23 @@ class Request_Parser {
 	}
 
 	/**
+	 * Set the appropriate query var in the instance that a request for a page was
+	 * accidentally caught against one of the WP Hashids rewrite rules.
+	 *
+	 * @param  WP $wp WP instance.
+	 *
+	 * @return void
+	 */
+	protected function change_to_page_vars( WP $wp ) {
+		// Hashid is invalid - We likely captured a request for a page with a
+		// single word slug (i.e. matches [a-zA-Z0-9]+)...
+		// @todo Better way to handle?
+		$wp->set_query_var( 'pagename', $wp->query_vars['hashid'] );
+
+		unset( $wp->query_vars['hashid'] );
+	}
+
+	/**
 	 * Check if a post type object represents a custom post type.
 	 *
 	 * @param  WP_Post_Type $pto WP post type instance.
@@ -109,22 +126,5 @@ class Request_Parser {
 		$wp->set_query_var( $pto->query_var, $post->post_name );
 		$wp->set_query_var( 'post_type', $pto->name );
 		$wp->set_query_var( 'name', $post->post_name );
-	}
-
-	/**
-	 * Set the appropriate query var in the instance that a request for a page was
-	 * accidentally caught against one of the WP Hashids rewrite rules.
-	 *
-	 * @param  WP $wp WP instance.
-	 *
-	 * @return void
-	 */
-	protected function change_to_page_vars( WP $wp ) {
-		// Hashid is invalid - We likely captured a request for a page with a
-		// single word slug (i.e. matches [a-zA-Z0-9]+)...
-		// @todo Better way to handle?
-		$wp->set_query_var( 'pagename', $wp->query_vars['hashid'] );
-
-		unset( $wp->query_vars['hashid'] );
 	}
 }

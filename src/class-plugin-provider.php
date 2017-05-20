@@ -34,6 +34,23 @@ class Plugin_Provider implements ServiceProviderInterface {
 		// not be available from the REST API...
 		add_action( 'init', [ $options_manager, 'register_settings' ] );
 		add_action( 'init', [ $container['rewrite_manager'], 'register_rewrites' ] );
+		add_action(
+			'parse_request',
+			[ $container->proxy( 'request_parser' ), 'parse' ]
+		);
+		add_action(
+			'update_option_wp_hashids_alphabet',
+			[ $options_manager, 'flush_rewrites_on_save' ],
+			10,
+			2
+		);
+
+		add_filter(
+			'post_type_link',
+			[ $container->proxy( 'hashid_injector' ), 'inject' ],
+			10,
+			2
+		);
 
 		foreach ( [ 'alphabet', 'min_length', 'salt' ] as $option ) {
 			add_filter(
@@ -44,25 +61,8 @@ class Plugin_Provider implements ServiceProviderInterface {
 			);
 		}
 
-		add_action(
-			'update_option_wp_hashids_alphabet',
-			[ $options_manager, 'flush_rewrites_on_save' ],
-			10,
-			2
-		);
-
-		add_action(
-			'parse_request',
-			[ $container->proxy( 'request_parser' ), 'parse' ]
-		);
 		add_filter(
 			'pre_post_link',
-			[ $container->proxy( 'hashid_injector' ), 'inject' ],
-			10,
-			2
-		);
-		add_filter(
-			'post_type_link',
 			[ $container->proxy( 'hashid_injector' ), 'inject' ],
 			10,
 			2
@@ -100,14 +100,14 @@ class Plugin_Provider implements ServiceProviderInterface {
 			return new Hashid_Injector( $c['options_manager'], $c['hashids'] );
 		};
 
+		$container['options_manager'] = function( Container $c ) {
+			return new Options_Manager( $c['options_store'] );
+		};
+
 		$container['options_prefix'] = 'wp_hashids';
 
 		$container['options_store'] = function( Container $c ) {
 			return new Options_Store( $c['options_prefix'] );
-		};
-
-		$container['options_manager'] = function( Container $c ) {
-			return new Options_Manager( $c['options_store'] );
 		};
 
 		$container['request_parser'] = function( Container $c ) {

@@ -81,6 +81,22 @@ class Options_Manager {
 	}
 
 	/**
+	 * Flush rewrite rules when the wp_hashids_alphabet option is updated.
+	 *
+	 * @param  string $old_value Previous alphabet option value.
+	 * @param  string $value     New alphabet option value.
+	 *
+	 * @return void
+	 */
+	public function flush_rewrites_on_save( $old_value, $value ) {
+		if ( $old_value === $value ) {
+			return;
+		}
+
+		delete_option( 'rewrite_rules' );
+	}
+
+	/**
 	 * Get the configured minimum length - Looks in constants first then DB.
 	 *
 	 * @return integer
@@ -125,47 +141,6 @@ class Options_Manager {
 			'sanitize_callback' => [ $this, 'sanitize_salt' ],
 			'show_in_rest' => true,
 		] );
-	}
-
-	/**
-	 * Grab plugin settings from constants when they are defined.
-	 *
-	 * @param  mixed  $pre_option Option value before checking DB.
-	 * @param  string $option     The option key.
-	 *
-	 * @return mixed
-	 */
-	public function use_constants_when_defined( $pre_option, $option ) {
-		$constant = strtoupper( $option );
-
-		if ( ! defined( $constant ) ) {
-			return $pre_option;
-		}
-
-		$value = constant( $constant );
-
-		// If null we could get caught constantly regenerating the salt.
-		if ( false === $value || is_null( $value ) ) {
-			return $pre_option;
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Flush rewrite rules when the wp_hashids_alphabet option is updated.
-	 *
-	 * @param  string $old_value Previous alphabet option value.
-	 * @param  string $value     New alphabet option value.
-	 *
-	 * @return void
-	 */
-	public function flush_rewrites_on_save( $old_value, $value ) {
-		if ( $old_value === $value ) {
-			return;
-		}
-
-		delete_option( 'rewrite_rules' );
 	}
 
 	/**
@@ -232,6 +207,31 @@ class Options_Manager {
 		}
 
 		return (string) $salt;
+	}
+
+	/**
+	 * Grab plugin settings from constants when they are defined.
+	 *
+	 * @param  mixed  $pre_option Option value before checking DB.
+	 * @param  string $option     The option key.
+	 *
+	 * @return mixed
+	 */
+	public function use_constants_when_defined( $pre_option, $option ) {
+		$constant = strtoupper( $option );
+
+		if ( ! defined( $constant ) ) {
+			return $pre_option;
+		}
+
+		$value = constant( $constant );
+
+		// If null we could get caught constantly regenerating the salt.
+		if ( false === $value || is_null( $value ) ) {
+			return $pre_option;
+		}
+
+		return $value;
 	}
 
 	/**
