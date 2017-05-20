@@ -20,15 +20,15 @@ class Rewrite_Manager {
 	 *
 	 * @var Options_Manager
 	 */
-	protected $manager;
+	protected $options;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param Options_Manager $manager Options manager instance.
+	 * @param Options_Manager $options Options manager instance.
 	 */
-	public function __construct( Options_Manager $manager ) {
-		$this->manager = $manager;
+	public function __construct( Options_Manager $options ) {
+		$this->options = $options;
 	}
 
 	/**
@@ -38,8 +38,8 @@ class Rewrite_Manager {
 	 */
 	public function register_rewrites() {
 		add_rewrite_tag(
-			$this->manager->rewrite_tag(),
-			"([{$this->manager->regex()}]+)"
+			$this->options->rewrite_tag(),
+			"([{$this->options->regex()}]+)"
 		);
 	}
 }

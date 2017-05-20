@@ -22,7 +22,7 @@ class Options_Page {
 	 *
 	 * @var Options_Manager
 	 */
-	protected $manager;
+	protected $options;
 
 	/**
 	 * Plates engine instance.
@@ -34,11 +34,11 @@ class Options_Page {
 	/**
 	 * Class constructor.
 	 *
-	 * @param Options_Manager $manager  Options manager instance.
+	 * @param Options_Manager $options  Options manager instance.
 	 * @param Engine          $template Plates engine instance.
 	 */
-	public function __construct( Options_Manager $manager, Engine $template ) {
-		$this->manager = $manager;
+	public function __construct( Options_Manager $options, Engine $template ) {
+		$this->options = $options;
 		$this->template = $template;
 	}
 
@@ -81,7 +81,7 @@ class Options_Page {
 			'wp_hashids_alphabet',
 			'Alphabet',
 			function() {
-				$current = $this->manager->alphabet();
+				$current = $this->options->alphabet();
 
 				if ( defined( 'WP_HASHIDS_ALPHABET' ) ) {
 					$alphabet = array_filter(
@@ -120,7 +120,7 @@ class Options_Page {
 				}
 
 				echo $this->template->render( $template, [
-					'value' => $this->manager->min_length(),
+					'value' => $this->options->min_length(),
 				] );
 			},
 			'wp-hashids',
@@ -138,7 +138,7 @@ class Options_Page {
 				}
 
 				echo $this->template->render( $template, [
-					'value' => $this->manager->salt(),
+					'value' => $this->options->salt(),
 				] );
 			},
 			'wp-hashids',

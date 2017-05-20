@@ -30,19 +30,19 @@ class Hashid_Injector {
 	 *
 	 * @var Options_Manager
 	 */
-	protected $manager;
+	protected $options;
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param Options_Manager  $manager Options manager instance.
+	 * @param Options_Manager  $options Options manager instance.
 	 * @param HashidsInterface $hashids Hashids instance.
 	 */
 	public function __construct(
-		Options_Manager $manager,
+		Options_Manager $options,
 		HashidsInterface $hashids
 	) {
-		$this->manager = $manager;
+		$this->options = $options;
 		$this->hashids = $hashids;
 	}
 
@@ -56,7 +56,7 @@ class Hashid_Injector {
 	 */
 	public function inject( $link, WP_Post $post ) {
 		return str_replace(
-			$this->manager->rewrite_tag(),
+			$this->options->rewrite_tag(),
 			$this->hashids->encode( $post->ID ),
 			$link
 		);
