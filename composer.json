@@ -9,7 +9,7 @@
         "composer/installers": "^1.0",
         "hashids/hashids": "^2.0",
         "league/plates": "^3.3",
-        "pimple/pimple": "^3.0",
+        "ssnepenthe/metis": "^0.6",
         "ssnepenthe/wp-requirements": "^0.1"
     },
     "require-dev": {

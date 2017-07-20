@@ -40,13 +40,14 @@ function _wph_instance() {
 	static $instance = null;
 
 	if ( is_null( $instance ) ) {
-		$instance = new WP_Hashids\Plugin( [
+		$instance = new Metis\Container( [
 			'dir' => __DIR__,
 			'file' => __FILE__,
 			'name' => 'WP Hashids',
 			'version' => '0.1.0',
 		] );
 
+		$instance->register( new Metis\WordPress_Provider );
 		$instance->register( new WP_Hashids\Admin_Provider );
 		$instance->register( new WP_Hashids\Hashids_Provider );
 		$instance->register( new WP_Hashids\Plates_Provider );
@@ -82,7 +83,8 @@ function _wph_init() {
 	// Plates lib must be loaded.
 	$checker->class_exists( 'League\\Plates\\Engine' );
 
-	// Pimple lib must be loaded.
+	// Metis lib must be loaded which also requires Pimple.
+	$checker->class_exists( 'Metis\\Container' );
 	$checker->class_exists( 'Pimple\\Container' );
 
 	// Hashids lib requires one of bcmath or gmp.
@@ -96,10 +98,7 @@ function _wph_init() {
 
 	$instance = _wph_instance();
 
-	register_deactivation_hook(
-		$instance['file'],
-		[ $instance, 'deactivate' ]
-	);
+	register_deactivation_hook( $instance['file'], [ $instance, 'deactivate' ] );
 
 	add_action( 'plugins_loaded', [ $instance, 'boot' ] );
 
