@@ -41,6 +41,19 @@ Keep in mind that any changes to the plugin settings will immediately change all
 
 If all three constants are configured, the `WP Hashids` settings page will not be visible.
 
+## Warning
+**HASHIDS IS ONLY INTENDED TO OBFUSCATE NUMBERS.**
+
+**IT DOES NOT PROVIDE ENCRYPTION AND IT IS NOT SECURE.**
+
+**YOU SHOULD ASSUME THAT YOUR SALT CAN AND WILL BE READ BY ANYONE THAT CAN VIEW YOUR SITE!**
+
+**FOR THIS REASON, YOU SHOULD NOT (RE)USE ANY SENSITIVE INFORMATION (LIKE PASSWORDS OR CORE SALTS) FOR YOUR HASHIDS SALT.**
+
+**YOUR SALT SHOULD BE A UNIQUE VALUE THAT IS ONLY USED BY THIS PLUGIN.**
+
+**FOR MORE INFORMATION, CHECK THE LINKS LISTED [HERE](http://hashids.org/#decoding).**
+
 ## Considerations
 As mentioned previously, changing any config value will result in all of your post URLs changing. This should only be done immediately after installing the plugin.
 
