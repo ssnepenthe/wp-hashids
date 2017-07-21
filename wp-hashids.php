@@ -9,7 +9,7 @@
  * Plugin Name: WP Hashids
  * Plugin URI: https://github.com/ssnepenthe/wp-hashids
  * Description: <a href="http://hashids.org/php/">Hashids</a> implementation for WordPress.
- * Version: 0.1.0
+ * Version: 0.1.2
  * Author: Ryan McLaughlin
  * Author URI: https://github.com/ssnepenthe
  * License: GPL-2.0
@@ -44,7 +44,7 @@ function _wph_instance() {
 			'dir' => __DIR__,
 			'file' => __FILE__,
 			'name' => 'WP Hashids',
-			'version' => '0.1.0',
+			'version' => '0.1.2',
 		] );
 
 		$instance->register( new Metis\WordPress_Provider() );
