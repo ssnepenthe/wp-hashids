@@ -54,7 +54,7 @@ class Options_Page {
 			'manage_options',
 			'wp-hashids',
 			function() {
-				echo $this->template->render( 'option-page', [
+				echo $this->template->render( 'option-page', [ // WPCS: XSS OK.
 					'group' => 'wp_hashids_group',
 					'page' => 'wp-hashids',
 				] );
@@ -72,7 +72,7 @@ class Options_Page {
 			'wp_hashids',
 			'Configure WP Hashids',
 			function() {
-				echo $this->template->render( 'option-section' );
+				echo $this->template->render( 'option-section' ); // WPCS: XSS OK.
 			},
 			'wp-hashids'
 		);
@@ -94,12 +94,12 @@ class Options_Page {
 					$values = reset( $alphabet );
 					$key = key( $alphabet );
 
-					echo $this->template->render( 'option-alphabet-disabled', [
+					echo $this->template->render( 'option-alphabet-disabled', [ // WPCS: XSS OK.
 						'current' => $key,
 						'regex' => $values['regex'],
 					] );
 				} else {
-					echo $this->template->render( 'option-alphabet', [
+					echo $this->template->render( 'option-alphabet', [ // WPCS: XSS OK.
 						'current' => $current,
 						'options' => Options_Manager::ALPHABET_MAP,
 					] );
@@ -119,7 +119,7 @@ class Options_Page {
 					$template .= '-disabled';
 				}
 
-				echo $this->template->render( $template, [
+				echo $this->template->render( $template, [ // WPCS: XSS OK.
 					'value' => $this->options->min_length(),
 				] );
 			},
@@ -137,7 +137,7 @@ class Options_Page {
 					$template .= '-disabled';
 				}
 
-				echo $this->template->render( $template, [
+				echo $this->template->render( $template, [ // WPCS: XSS OK.
 					'value' => $this->options->salt(),
 				] );
 			},

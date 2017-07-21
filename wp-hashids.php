@@ -47,11 +47,11 @@ function _wph_instance() {
 			'version' => '0.1.0',
 		] );
 
-		$instance->register( new Metis\WordPress_Provider );
-		$instance->register( new WP_Hashids\Admin_Provider );
-		$instance->register( new WP_Hashids\Hashids_Provider );
-		$instance->register( new WP_Hashids\Plates_Provider );
-		$instance->register( new WP_Hashids\Plugin_Provider );
+		$instance->register( new Metis\WordPress_Provider() );
+		$instance->register( new WP_Hashids\Admin_Provider() );
+		$instance->register( new WP_Hashids\Hashids_Provider() );
+		$instance->register( new WP_Hashids\Plates_Provider() );
+		$instance->register( new WP_Hashids\Plugin_Provider() );
 	}
 
 	return $instance;

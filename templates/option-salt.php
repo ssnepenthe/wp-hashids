@@ -18,5 +18,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	name="wp_hashids_salt"
 	placeholder="Unique salt..."
 	type="text"
-	value="<?php echo esc_attr( $value ) ?>"
+	value="<?php echo esc_attr( $value ); ?>"
 >

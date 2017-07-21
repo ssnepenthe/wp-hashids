@@ -203,7 +203,7 @@ class Options_Manager {
 	public function sanitize_salt( $salt ) {
 		if ( is_null( $salt ) ) {
 			// @todo
-			$salt = ( new Salt_Generator )->generate();
+			$salt = ( new Salt_Generator() )->generate();
 		}
 
 		return (string) $salt;
