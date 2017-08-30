@@ -56,7 +56,7 @@ class Salt_Generator {
 	 */
 	protected function fetch_salt( $length ) {
 		$salt = '';
-		$salts = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
+		$salts = wp_safe_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/' );
 
 		if ( ! is_wp_error( $salts ) ) {
 			$salts = array_filter( explode(
