@@ -34,6 +34,8 @@ function _wph_require_if_exists( $file ) {
 /**
  * Plugin instance getter.
  *
+ * @param  null|string $id ID of container entry.
+ *
  * @return WP_Hashids\Plugin
  */
 function _wph_instance( $id = null ) {
