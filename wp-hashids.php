@@ -36,10 +36,10 @@ function _wph_require_if_exists( $file ) {
  *
  * @return WP_Hashids\Plugin
  */
-function _wph_instance() {
+function _wph_instance( $id = null ) {
 	static $instance = null;
 
-	if ( is_null( $instance ) ) {
+	if ( null === $instance ) {
 		$instance = new Metis\Container( [
 			'dir' => __DIR__,
 			'file' => __FILE__,
@@ -52,6 +52,10 @@ function _wph_instance() {
 		$instance->register( new WP_Hashids\Hashids_Provider() );
 		$instance->register( new WP_Hashids\Plates_Provider() );
 		$instance->register( new WP_Hashids\Plugin_Provider() );
+	}
+
+	if ( null !== $id ) {
+		return $instance[ $id ];
 	}
 
 	return $instance;

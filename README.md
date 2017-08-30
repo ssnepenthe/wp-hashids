@@ -23,6 +23,8 @@ $ composer install
 ## Usage
 Once the plugin is activated, browse to `wp-admin > settings > permalinks` and set a custom structure which contains the tag `%hashid%`.
 
+If you need to manually interact with the underlying Hashids instance for some reason, it can be accessed by calling `_wph_instance( 'hashids' )`.
+
 ## Configuration
 Sensible defaults are automatically set for you.
 
