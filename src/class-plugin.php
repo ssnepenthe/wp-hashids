@@ -20,9 +20,6 @@ class Plugin extends DaedalusPlugin
     {
         return [
             new PimpleProvider(),
-            new Admin_Provider(),
-            new Hashids_Provider(),
-            new Plates_Provider(),
             new Plugin_Provider(),
         ];
     }
