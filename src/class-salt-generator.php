@@ -7,6 +7,8 @@
 
 namespace WP_Hashids;
 
+use Exception;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
