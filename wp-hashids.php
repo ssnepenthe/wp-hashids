@@ -5,6 +5,9 @@
  * @package wp-hashids
  */
 
+use Psr\Container\ContainerInterface;
+use WP_Hashids\Plugin;
+
 /**
  * Plugin Name: WP Hashids
  * Plugin URI: https://github.com/ssnepenthe/wp-hashids
@@ -21,43 +24,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Require a file (once) if it exists.
- *
- * @param  string $file Path to the file you wish to check.
- */
-function _wph_require_if_exists( $file ) {
-	if ( file_exists( $file ) ) {
-		require_once $file;
-	}
-}
-
-/**
  * Plugin instance getter.
  *
  * @param  null|string $id ID of container entry.
  *
- * @return WP_Hashids\Plugin
+ * @return mixed
  */
 function _wph_instance( $id = null ) {
 	static $instance = null;
 
 	if ( null === $instance ) {
-		$instance = new Metis\Container( [
-			'dir' => __DIR__,
-			'file' => __FILE__,
-			'name' => 'WP Hashids',
-			'version' => '0.1.2',
-		] );
-
-		$instance->register( new Metis\WordPress_Provider() );
-		$instance->register( new WP_Hashids\Admin_Provider() );
-		$instance->register( new WP_Hashids\Hashids_Provider() );
-		$instance->register( new WP_Hashids\Plates_Provider() );
-		$instance->register( new WP_Hashids\Plugin_Provider() );
+        $instance = new Plugin();
 	}
 
 	if ( null !== $id ) {
-		return $instance[ $id ];
+        if ( ! $instance->getContainer() instanceof ContainerInterface ) {
+            throw new RuntimeException( '@todo' );
+        }
+
+        return $instance->getContainer()->get( $id );
 	}
 
 	return $instance;
@@ -77,8 +62,8 @@ function _wph_init() {
 
 	$checker = new WP_Requirements\Plugin_Checker( 'WP Hashids', __FILE__ );
 
-	// Constant arrays.
-	$checker->php_at_least( '5.6' );
+	// Daedalus requires 7.4+.
+	$checker->php_at_least( '7.4' );
 
 	// Uses register_setting() with args array.
 	$checker->wp_at_least( '4.7' );
@@ -89,8 +74,8 @@ function _wph_init() {
 	// Plates lib must be loaded.
 	$checker->class_exists( 'League\\Plates\\Engine' );
 
-	// Metis lib must be loaded which also requires Pimple.
-	$checker->class_exists( 'Metis\\Container' );
+	// Daedalus-pimple lib must be loaded which also requires Pimple.
+	$checker->class_exists( 'Daedalus\\Pimple\\PimpleProvider' );
 	$checker->class_exists( 'Pimple\\Container' );
 
 	// Hashids lib requires one of bcmath or gmp.
@@ -102,14 +87,13 @@ function _wph_init() {
 		return $checker->deactivate_and_notify();
 	}
 
-	$instance = _wph_instance();
-
-	register_deactivation_hook( $instance['file'], [ $instance, 'deactivate' ] );
-
-	add_action( 'plugins_loaded', [ $instance, 'boot' ] );
+	_wph_instance()->run();
 
 	$initialized = true;
 }
 
-_wph_require_if_exists( __DIR__ . '/vendor/autoload.php' );
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 _wph_init();

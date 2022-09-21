@@ -7,28 +7,27 @@
 
 namespace WP_Hashids;
 
-use Pimple\Container;
+use Daedalus\Pimple\Events\AddingContainerDefinitions;
+use Daedalus\Plugin\SubscriberProvider;
 use League\Plates\Engine;
-use Pimple\ServiceProviderInterface;
+use Psr\Container\ContainerInterface;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-/**
- * Defines the plates provider class.
- */
-class Plates_Provider implements ServiceProviderInterface {
-	/**
-	 * Provider specific registration logic.
-	 *
-	 * @param  Container $container The plugin container instance.
-	 *
-	 * @return void
-	 */
-	public function register( Container $container ) {
-		$container['plates'] = function( Container $c ) {
-			return new Engine( $c['dir'] . '/templates' );
-		};
+class Plates_Provider extends SubscriberProvider {
+	public function getSubscribedEvents(): array {
+		return [
+			AddingContainerDefinitions::class => 'on_adding_container_definitions',
+		];
+	}
+
+	public function on_adding_container_definitions( AddingContainerDefinitions $event ): void {
+		$event->addDefinitions( [
+			'plates' => function( ContainerInterface $c ) {
+				return new Engine( $c->get( 'plugin.dir' ) . '/templates' );
+			},
+		] );
 	}
 }

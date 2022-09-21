@@ -7,34 +7,34 @@
 
 namespace WP_Hashids;
 
+use Daedalus\Pimple\Events\AddingContainerDefinitions;
+use Daedalus\Plugin\SubscriberProvider;
 use Hashids\Hashids;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Psr\Container\ContainerInterface;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-/**
- * Defines the hashids provider class.
- */
-class Hashids_Provider implements ServiceProviderInterface {
-	/**
-	 * Provider specific registration logic.
-	 *
-	 * @param  Container $container The plugin container instance.
-	 *
-	 * @return void
-	 */
-	public function register( Container $container ) {
-		$container['hashids'] = function( Container $c ) {
-			$options = $c['options_manager'];
+class Hashids_Provider extends SubscriberProvider {
+	public function getSubscribedEvents(): array
+	{
+		return [
+			AddingContainerDefinitions::class => 'on_adding_container_definitions',
+		];
+	}
 
-			return new Hashids(
-				$options->salt(),
-				$options->min_length(),
-				$options->alphabet()
-			);
-		};
+	public function on_adding_container_definitions( AddingContainerDefinitions $event ): void {
+		$event->addDefinitions( [
+			'hashids' => function( ContainerInterface $c ) {
+				$options = $c->get( 'options_manager' );
+
+				return new Hashids(
+					$options->salt(),
+					$options->min_length(),
+					$options->alphabet()
+				);
+			},
+		] );
 	}
 }
