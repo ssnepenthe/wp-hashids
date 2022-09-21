@@ -51,19 +51,19 @@ class Plugin_Subscriber implements SubscriberInterface
 		// Docs still recommend using the admin_init hook but then the options will
 		// not be available from the REST API...
 		$this->container->get( 'options_manager' )->register_settings();
-		$this->container->get( 'rewrite_manager' )->register_rewrites();
+		$this->container->get( 'rewrite_service' )->register_rewrite_tag();
 	}
 
     public function on_parse_request( WP $wp ): void {
 		$this->container
-			->get( 'request_parser' )
-			->parse( $wp );
+			->get( 'rewrite_service' )
+			->parse_request( $wp );
 	}
 
     public function on_post_link( $link, $post ): string {
 		return $this->container
-			->get( 'hashid_injector' )
-			->inject( $link, $post );
+			->get( 'rewrite_service' )
+			->replace_hashid_rewrite_tag( $link, $post );
 	}
 
     public function on_pre_option( $pre_option, $option ) {

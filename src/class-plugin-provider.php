@@ -55,9 +55,6 @@ class Plugin_Provider extends SubscriberProvider {
 
 	public function on_adding_container_definitions( AddingContainerDefinitions $event ): void {
 		$event->addDefinitions( [
-			'hashid_injector' => function( ContainerInterface $c ) {
-				return new Hashid_Injector( $c->get( 'options_manager' ), $c->get( 'hashids' ) );
-			},
 			'hashids' => function( ContainerInterface $c ) {
 				$options = $c->get( 'options_manager' );
 
@@ -79,11 +76,8 @@ class Plugin_Provider extends SubscriberProvider {
 			'plates' => function( ContainerInterface $c ) {
 				return new Engine( $c->get( 'plugin.dir' ) . '/templates' );
 			},
-			'request_parser' => function( ContainerInterface $c ) {
-				return new Request_Parser( $c->get( 'hashids' ) );
-			},
-			'rewrite_manager' => function( ContainerInterface $c ) {
-				return new Rewrite_Manager( $c->get( 'options_manager' ) );
+			'rewrite_service' => function( ContainerInterface $c ) {
+				return new Rewrite_Service( $c->get( 'options_manager' ), $c->get( 'hashids' ) );
 			},
 		] );
 	}
