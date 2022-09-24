@@ -16,7 +16,7 @@ class Rewrite_Service {
 		$this->hashids = $hashids;
 	}
 
-	public function replace_hashid_rewrite_tag( string $link, WP_Post $post ) {
+	public function replace_hashid_tag_with_post_hashid( string $link, WP_Post $post ) {
 		return str_replace(
 			$this->options->rewrite_tag(),
 			$this->hashids->encode( $post->ID ),

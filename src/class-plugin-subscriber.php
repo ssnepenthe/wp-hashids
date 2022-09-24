@@ -72,7 +72,7 @@ class Plugin_Subscriber implements SubscriberInterface
 	public function on_post_link( $link, $post ): string {
 		return $this->container
 			->get( 'rewrite_service' )
-			->replace_hashid_rewrite_tag( $link, $post );
+			->replace_hashid_tag_with_post_hashid( $link, $post );
 	}
 
 	public function on_pre_option( $pre_option, $option ) {
