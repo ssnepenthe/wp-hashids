@@ -13,7 +13,6 @@ use Daedalus\Plugin\SubscriberProvider;
 use Hashids\Hashids;
 use League\Plates\Engine;
 use Psr\Container\ContainerInterface;
-use WP_Hashids\Events\Plugin_Deactivating;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
@@ -27,30 +26,12 @@ class Plugin_Provider extends SubscriberProvider {
 		return [
 			AddingContainerDefinitions::class => 'on_adding_container_definitions',
 			AddingSubscribers::class => 'on_adding_subscribers',
-			Plugin_Deactivating::class => 'on_plugin_deactivating',
 		];
 	}
 
 	public function on_adding_subscribers( AddingSubscribers $event ): void
 	{
 		$event->addSubscriber( new Plugin_Subscriber( $event->getPlugin()->getContainer() ) );
-	}
-
-	/**
-	 * Remove the rewrite tag from site permalink structure on deactivation.
-	 */
-	public function on_plugin_deactivating( Plugin_Deactivating $event ): void {
-		$container = $event->getPlugin()->getContainer();
-		$wp_rewrite = $container->get( 'wp_rewrite' );
-		$options_manager = $container->get( 'options_manager' );
-
-		$wp_rewrite->set_permalink_structure( str_replace(
-			$options_manager->rewrite_tag(),
-			'%post_id%',
-			$wp_rewrite->permalink_structure
-		) );
-
-		$wp_rewrite->flush_rules();
 	}
 
 	public function on_adding_container_definitions( AddingContainerDefinitions $event ): void {

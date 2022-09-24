@@ -5,6 +5,7 @@ namespace WP_Hashids;
 use Hashids\HashidsInterface;
 use WP;
 use WP_Post;
+use WP_Rewrite;
 
 class Rewrite_Service {
 	private $options;
@@ -25,6 +26,16 @@ class Rewrite_Service {
 
 	public function register_rewrite_tag() {
 		add_rewrite_tag( $this->options->rewrite_tag(), "([{$this->options->regex()}]+)" );
+	}
+
+	public function remove_hashid_tag_from_permalink_structure( WP_Rewrite $wp_rewrite ) {
+		$wp_rewrite->set_permalink_structure( str_replace(
+			$this->options->rewrite_tag(),
+			'%post_id%',
+			$wp_rewrite->permalink_structure
+		) );
+
+		$wp_rewrite->flush_rules();
 	}
 
 	/**

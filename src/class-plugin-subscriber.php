@@ -5,6 +5,7 @@ namespace WP_Hashids;
 use Psr\Container\ContainerInterface;
 use ToyWpEventManagement\SubscriberInterface;
 use WP;
+use WP_Hashids\Events\Plugin_Deactivating;
 
 class Plugin_Subscriber implements SubscriberInterface
 {
@@ -28,6 +29,8 @@ class Plugin_Subscriber implements SubscriberInterface
 			'pre_option_wp_hashids_salt' => 'on_pre_option',
 			'pre_post_link' => 'on_post_link',
 			'update_option_wp_hashids_alphabet' => 'on_update_option',
+
+			Plugin_Deactivating::class => 'on_plugin_deactivating',
 		];
 	}
 
@@ -58,6 +61,12 @@ class Plugin_Subscriber implements SubscriberInterface
 		$this->container
 			->get( 'rewrite_service' )
 			->parse_request( $wp );
+	}
+
+	public function on_plugin_deactivating(): void {
+		$this->container
+			->get( 'rewrite_service' )
+			->remove_hashid_tag_from_permalink_structure( $this->container->get( 'wp_rewrite' ) );
 	}
 
 	public function on_post_link( $link, $post ): string {
