@@ -4,7 +4,6 @@ namespace WP_Hashids;
 
 use Daedalus\Pimple\PimpleProvider;
 use Daedalus\Plugin\Plugin as DaedalusPlugin;
-use Daedalus\Plugin\ToyWpEventManagementProvider;
 use WP_Hashids\Events\Plugin_Deactivating;
 
 class Plugin extends DaedalusPlugin
@@ -21,7 +20,6 @@ class Plugin extends DaedalusPlugin
 	{
 		return [
 			new PimpleProvider(),
-			new ToyWpEventManagementProvider(),
 			new Plugin_Provider(),
 		];
 	}
