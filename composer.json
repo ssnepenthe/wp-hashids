@@ -13,11 +13,15 @@
         "ssnepenthe/wp-requirements": "^0.1"
     },
     "require-dev": {
-        "10up/wp_mock": "dev-dev",
-        "mockery/mockery": "^0.9",
+        "brain/monkey": "^2.0",
         "psy/psysh": "^0.8"
     },
     "autoload": {
         "classmap": ["src/"]
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }

@@ -1,37 +1,43 @@
 <?php
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use WP_Hashids\Options_Store;
 use WP_Hashids\Options_Manager;
-use WP_Hashids\Options_Manager_Interface;
+
 
 class Options_Manager_Test extends PHPUnit_Framework_TestCase {
+	use MockeryPHPUnitIntegration;
+
 	function setUp() {
-		WP_Mock::setUp();
+		parent::setUp();
+		Monkey\setUp();
 	}
 
 	function tearDown() {
-		WP_Mock::tearDown();
+		Monkey\tearDown();
+		parent::tearDown();
 	}
 
 	/** @test */
-	function it_can_get_the_hashid_alphabet() {
-		$store = Mockery::mock( Options_Store::class )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( null )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( 'lowerupper' )
-			->mock();
-		$manager = new Options_Manager( $store );
+	function it_can_get_the_hashid_alphabet_default() {
+		Functions\when( 'get_option' )->justReturn( null );
 
-		// Not in store so falls back to default.
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['all']['alphabet'],
 			$manager->alphabet()
 		);
+	}
 
-		// In store - maps to actual alphabet.
+	/** @test */
+	function it_can_get_configured_hashid_alphabet() {
+		Functions\when( 'get_option' )->justReturn( 'lowerupper' );
+
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['lowerupper']['alphabet'],
 			$manager->alphabet()
@@ -39,53 +45,63 @@ class Options_Manager_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/** @test */
-	function it_can_get_the_hashid_min_length() {
-		WP_Mock::userFunction( 'absint', [
-			'times' => 3,
-			'return' => function( $value ) {
-				return abs( intval( $value ) );
-			}
-		] );
-		$store = Mockery::mock( Options_Store::class )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( null )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( '6' )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( 8 )
-			->mock();
-		$manager = new Options_Manager( $store );
+	function it_can_get_the_hashid_min_length_default() {
+		Functions\when( 'absint' )->alias( function( $value ) {
+			return abs( intval( $value ) );
+		} );
 
-		// Test that it is run through absint.
+		Functions\when( 'get_option' )->justReturn( null );
+
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertSame( 0, $manager->min_length() );
-		$this->assertSame( 6, $manager->min_length() );
+	}
 
-		// Normal.
+	/** @test */
+	function it_can_get_the_configured_hashid_min_length() {
+		Functions\when( 'absint' )->alias( function( $value ) {
+			return abs( intval( $value ) );
+		} );
+
+		Functions\when( 'get_option' )->justReturn( 8 );
+
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertSame( 8, $manager->min_length() );
 	}
 
 	/** @test */
-	function it_can_get_the_rewrite_regex() {
-		$store = Mockery::mock( Options_Store::class )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( null )
-			->shouldReceive( 'get' )
-			->once()
-			->andReturn( 'lowerupper' )
-			->mock();
-		$manager = new Options_Manager( $store );
+	function it_can_sanitize_get_the_hashid_min_length() {
+		Functions\when( 'absint' )->alias( function( $value ) {
+			return abs( intval( $value ) );
+		} );
 
-		// Not in store so falls back to default.
+		Functions\when( 'get_option' )->justReturn( '6' );
+
+		$manager = new Options_Manager( new Options_Store() );
+
+		$this->assertSame( 6, $manager->min_length() );
+	}
+
+	/** @test */
+	function it_can_get_the_rewrite_regex_default() {
+		Functions\when( 'get_option' )->justReturn( null );
+
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['all']['regex'],
 			$manager->regex()
 		);
 
-		// In store - maps to actual regex.
+	}
+
+	/** @test */
+	function it_can_get_the_configured_rewrite_regex() {
+		Functions\when( 'get_option' )->justReturn( 'lowerupper' );
+
+		$manager = new Options_Manager( new Options_Store() );
+
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['lowerupper']['regex'],
 			$manager->regex()
@@ -101,7 +117,7 @@ class Options_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	/** @test */
 	function it_can_sanitize_alphabet() {
-		$manager = new Options_Manager( Mockery::mock( Options_Store::class ) );
+		$manager = new Options_Manager( new Options_Store() );
 
 		// Unrecognized alphabets are reset to all.
 		$this->assertEquals( 'all', $manager->sanitize_alphabet( 'test' ) );
