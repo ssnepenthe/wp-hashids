@@ -1,88 +1,84 @@
 <?php
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
 use WP_Hashids\Options_Store;
 
 class Options_Store_Test extends PHPUnit_Framework_TestCase {
 	protected $store;
 
 	function setUp() {
-		WP_Mock::setUp();
+		parent::setUp();
+		Monkey\setUp();
 
 		$this->store = new Options_Store;
 	}
 
 	function tearDown() {
-		WP_Mock::tearDown();
-
 		$this->store = null;
+
+		Monkey\tearDown();
+		parent::tearDown();
 	}
 
 	/** @test */
 	function add_delegates_to_add_option() {
-		WP_Mock::userFunction( 'add_option', [
-			'args' => [ 'test', 'value' ],
-			'times' => 1,
-			'return' => true,
-		] );
+		Functions\expect( 'add_option' )
+			->once()
+			->with( 'test', 'value' )
+			->andReturn( true );
 
 		$this->assertTrue( $this->store->add( 'test', 'value' ) );
 	}
 
 	/** @test */
 	function delete_delegates_to_delete_option() {
-		WP_Mock::userFunction( 'delete_option', [
-			'args' => 'test',
-			'times' => 1,
-			'return' => true,
-		] );
+		Functions\expect( 'delete_option' )
+			->once()
+			->with( 'test' )
+			->andReturn( true );
 
 		$this->assertTrue( $this->store->delete( 'test' ) );
 	}
 
 	/** @test */
 	function get_delegates_to_get_option() {
-		WP_Mock::userFunction( 'get_option', [
-			'args' => 'test',
-			'times' => 1,
-			'return' => 'value',
-		] );
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'test' )
+			->andReturn( 'value' );
 
 		$this->assertEquals( 'value', $this->store->get( 'test' ) );
 	}
 
 	/** @test */
 	function set_delegates_to_update_option() {
-		WP_Mock::userFunction( 'update_option', [
-			'args' => [ 'test', 'value' ],
-			'times' => 1,
-			'return' => true,
-		] );
+		Functions\expect( 'update_option' )
+			->once()
+			->with( 'test', 'value' )
+			->andReturn( true );
 
 		$this->assertTrue( $this->store->set( 'test', 'value' ) );
 	}
 
 	/** @test */
 	function it_prepends_prefix_to_option_key_if_applicable() {
-		WP_Mock::userFunction( 'add_option', [
-			'args' => [ 'pfx_test', 'value' ],
-			'times' => 1,
-			'return' => true,
-		] );
-		WP_Mock::userFunction( 'delete_option', [
-			'args' => 'pfx_test',
-			'times' => 1,
-			'return' => true,
-		] );
-		WP_Mock::userFunction( 'get_option', [
-			'args' => 'pfx_test',
-			'times' => 1,
-			'return' => 'value',
-		] );
-		WP_Mock::userFunction( 'update_option', [
-			'args' => [ 'pfx_test', 'value' ],
-			'times' => 1,
-			'return' => true,
-		] );
+		Functions\expect( 'add_option' )
+			->once()
+			->with( 'pfx_test', 'value' )
+			->andReturn( true );
+		Functions\expect( 'delete_option' )
+			->once()
+			->with( 'pfx_test' )
+			->andReturn( true );
+		Functions\expect( 'get_option' )
+			->once()
+			->with( 'pfx_test' )
+			->andReturn( 'value' );
+		Functions\expect( 'update_option' )
+			->once()
+			->with( 'pfx_test', 'value' )
+			->andReturn( true );
 
 		$prefixed_store = new Options_Store( 'pfx' );
 
