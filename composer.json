@@ -13,6 +13,7 @@
         "ssnepenthe/wp-requirements": "^0.1"
     },
     "require-dev": {
+        "brain/monkey": "^2.0",
         "mockery/mockery": "^0.9",
         "psy/psysh": "^0.8"
     },
