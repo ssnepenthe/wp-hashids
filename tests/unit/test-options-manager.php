@@ -5,19 +5,19 @@ use Brain\Monkey\Functions;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use WP_Hashids\Options_Store;
 use WP_Hashids\Options_Manager;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-
-class Options_Manager_Test extends PHPUnit_Framework_TestCase {
+class Options_Manager_Test extends TestCase {
 	use MockeryPHPUnitIntegration;
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		Monkey\setUp();
 	}
 
-	function tearDown() {
+	function tear_down() {
 		Monkey\tearDown();
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/** @test */

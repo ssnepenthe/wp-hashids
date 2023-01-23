@@ -7,9 +7,9 @@ abstract class WPH_Rewrite_Test_Case extends WP_UnitTestCase {
 	protected $post_types;
 	protected $permalink_structure = '/blog/%hashid%/';
 
-	function setUp() {
+	function set_up() {
 		// Order of operations in this method is important.
-		parent::setUp();
+		parent::set_up();
 
 		$this->add_query_vars();
 		$this->set_permalink_structure( $this->permalink_structure );
@@ -21,11 +21,11 @@ abstract class WPH_Rewrite_Test_Case extends WP_UnitTestCase {
 		$this->create_posts();
 	}
 
-	function tearDown() {
-		parent::tearDown();
-
+	function tear_down() {
 		$this->delete_posts();
 		$this->unregister_post_types();
+
+		parent::tear_down();
 	}
 
 	protected function add_query_vars() {

@@ -3,22 +3,23 @@
 use Brain\Monkey;
 use Brain\Monkey\Functions;
 use WP_Hashids\Options_Store;
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-class Options_Store_Test extends PHPUnit_Framework_TestCase {
+class Options_Store_Test extends TestCase {
 	protected $store;
 
-	function setUp() {
-		parent::setUp();
+	function set_up() {
+		parent::set_up();
 		Monkey\setUp();
 
 		$this->store = new Options_Store;
 	}
 
-	function tearDown() {
+	function tear_down() {
 		$this->store = null;
 
 		Monkey\tearDown();
-		parent::tearDown();
+		parent::tear_down();
 	}
 
 	/** @test */

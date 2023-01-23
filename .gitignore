@@ -1,2 +1,5 @@
 vendor/
+wordpress/
+.phpunit.result.cache
 composer.lock
+wp-cli.local.yml
