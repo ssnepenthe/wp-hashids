@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "aaemnnosttv/wp-sqlite-db": "dev-master",
-        "brain/monkey": "^2.0",
+        "brain/monkey": "^2.6",
         "koodimonni/composer-dropin-installer": "^1.4",
         "psy/psysh": "^0.8",
         "roots/wordpress": "^6.1",
