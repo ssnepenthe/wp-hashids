@@ -59,8 +59,9 @@ jobs:
       - name: Override WordPress version
         if: ${{ matrix.wordpress != 'latest' }}
         run: |
-          composer require roots/wordpress:${{ matrix.wordpress }} --dev --no-update
-          composer require wp-phpunit/wp-phpunit:${{ matrix.wordpress }} --dev --no-update
+          composer require roots/wordpress:^${{ matrix.wordpress }} --dev --no-update
+          composer require wp-phpunit/wp-phpunit:^${{ matrix.wordpress }} --dev --no-update
+          composer require phpunit/phpunit:^5.6 --dev --no-update
 
       - name: Install Composer dependencies
         run: composer update --ansi --no-interaction --no-progress --prefer-dist
