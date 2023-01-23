@@ -61,7 +61,7 @@ jobs:
       - name: Override PHPUnit version for PHP versions >= 8.0
         if: ${{ startsWith( matrix.php, '8' ) }}
         run: |
-          composer require phpunit/phpunit:>=8.5.14 --dev --no-update
+          composer require "phpunit/phpunit:>=8.5.14" --dev --no-update
           cat composer.json | jq .\"require-dev\"
 
       - name: Install Composer dependencies
