@@ -13,4 +13,8 @@
             <directory prefix="test-" suffix=".php">./tests/unit/</directory>
         </testsuite>
 	</testsuites>
+
+	<php>
+		<env name="WP_PHPUNIT__TESTS_CONFIG" value="tests/integration/wp-tests-config.php" />
+	</php>
 </phpunit>

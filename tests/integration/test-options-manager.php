@@ -8,15 +8,17 @@ use WP_Hashids\Options_Manager;
 class Options_Manager_Test extends WP_UnitTestCase {
 	/** @test */
 	function salt_is_automatically_generated_and_save_when_not_in_db() {
-		$manager = new Options_Manager( new Options_Store( 'pfx' ) );
+		$prefix = 'pfx_' . __METHOD__;
 
-		$this->assertFalse( get_option( 'pfx_salt' ) );
+		$manager = new Options_Manager( new Options_Store( $prefix ) );
+
+		$this->assertFalse( get_option( "{$prefix}_salt" ) );
 
 		$salt = $manager->salt();
 
 		$this->assertTrue( is_string( $salt ) );
 		$this->assertSame( 64, strlen( $salt ) );
-		$this->assertEquals( $salt, get_option( 'pfx_salt' ) );
+		$this->assertEquals( $salt, get_option( "{$prefix}_salt" ) );
 	}
 
 	/** @test */
