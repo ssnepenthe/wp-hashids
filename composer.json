@@ -16,11 +16,10 @@
         "aaemnnosttv/wp-sqlite-db": "dev-master",
         "brain/monkey": "^2.6.1",
         "koodimonni/composer-dropin-installer": "^1.4",
-        "phpunit/phpunit": ">=5.7",
-        "psy/psysh": "^0.8",
+        "phpunit/phpunit": ">=8.5.14",
         "roots/wordpress": "^6.1",
         "wp-phpunit/wp-phpunit": "^6.1",
-        "yoast/phpunit-polyfills": "^1.0"
+        "yoast/phpunit-polyfills": "^1.0.1"
     },
     "autoload": {
         "classmap": [
