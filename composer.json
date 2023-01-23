@@ -51,7 +51,7 @@
         }
     },
     "scripts": {
-        "test:unit": "vendor/bin/phpunit --bootstrap=tests/unit/bootstrap.php --testsuite=unit",
-        "test:integration": "bin/run-integration-tests.sh"
+        "test:integration": "bin/run-integration-tests.sh",
+        "test:unit": "vendor/bin/phpunit --bootstrap=tests/unit/bootstrap.php --testsuite=unit"
     }
 }
