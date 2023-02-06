@@ -16,7 +16,7 @@
         "aaemnnosttv/wp-sqlite-db": "dev-master",
         "brain/monkey": "^2.6.1",
         "koodimonni/composer-dropin-installer": "^1.4",
-        "phpunit/phpunit": ">=5.7",
+        "phpunit/phpunit": "^5.7 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
         "roots/wordpress": "^6.1",
         "wp-phpunit/wp-phpunit": "^6.1",
         "yoast/phpunit-polyfills": "^1.0.1"
