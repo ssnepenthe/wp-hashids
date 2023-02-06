@@ -54,7 +54,16 @@ class Hashid_Injector {
 	 *
 	 * @return string
 	 */
-	public function inject( $link, WP_Post $post ) {
+	public function inject( $link, $post ) {
+		if ( ! (
+			is_string( $link )
+			&& is_object( $post )
+			&& property_exists( $post, 'ID' )
+			&& ( is_int( $post->ID ) || is_string( $post->ID ) )
+		) ) {
+			return $link;
+		}
+
 		return str_replace(
 			$this->options->rewrite_tag(),
 			$this->hashids->encode( $post->ID ),

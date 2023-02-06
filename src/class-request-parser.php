@@ -43,8 +43,8 @@ class Request_Parser {
 	 *
 	 * @return void
 	 */
-	public function parse( WP $wp ) {
-		if ( ! isset( $wp->query_vars['hashid'] ) ) {
+	public function parse( $wp ) {
+		if ( ! ( $wp instanceof WP && isset( $wp->query_vars['hashid'] ) && is_string( $wp->query_vars['hashid'] ) ) ) {
 			return;
 		}
 
@@ -59,7 +59,20 @@ class Request_Parser {
 		// %hashid%, WP very likely already has everything it needs... We
 		// should be doing some more robust checks in here.
 		$post = get_post( $id );
+
+		if ( ! $post instanceof WP_Post ) {
+			// We shouldn't ever get here - it would require access to plugin settings in order to
+			// generate a hashid for a non-existent post id. However if we do get to this point we
+			// will just pretend that the hashid is a page name so that WP can serve a 404 for us.
+			return $this->change_to_page_vars( $wp );
+		}
+
 		$pto = get_post_type_object( $post->post_type );
+
+		if ( ! $pto instanceof WP_Post_Type ) {
+			// Again we should never get here, but just to be safe let WP serve a 404...
+			return $this->change_to_page_vars( $wp );
+		}
 
 		if ( $this->is_custom_post_type( $pto ) ) {
 			return $this->set_custom_post_type_vars( $wp, $pto, $post );

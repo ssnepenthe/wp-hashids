@@ -218,6 +218,10 @@ class Options_Manager {
 	 * @return mixed
 	 */
 	public function use_constants_when_defined( $pre_option, $option ) {
+		if ( ! is_string( $option ) ) {
+			return $pre_option;
+		}
+
 		$constant = strtoupper( $option );
 
 		if ( ! defined( $constant ) ) {

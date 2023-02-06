@@ -77,13 +77,15 @@ class Plugin_Provider implements ServiceProviderInterface {
 	 * @return void
 	 */
 	public function deactivate( Container $container ) {
-		$container['wp_rewrite']->set_permalink_structure( str_replace(
-			$container['options_manager']->rewrite_tag(),
-			'%post_id%',
-			$container['wp_rewrite']->permalink_structure
-		) );
+		if ( is_string( $container['wp_rewrite']->permalink_structure ) ) {
+			$container['wp_rewrite']->set_permalink_structure( str_replace(
+				$container['options_manager']->rewrite_tag(),
+				'%post_id%',
+				$container['wp_rewrite']->permalink_structure
+			) );
 
-		$container['wp_rewrite']->flush_rules();
+			$container['wp_rewrite']->flush_rules();
+		}
 	}
 
 	/**
