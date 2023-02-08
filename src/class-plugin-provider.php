@@ -39,7 +39,7 @@ class Plugin_Provider implements ServiceProviderInterface {
 			[ $container->proxy( 'request_parser' ), 'parse' ]
 		);
 		add_action(
-			'update_option_wp_hashids_alphabet',
+			'update_option_' . Options_Manager::ALPHABET_OPTION_KEY,
 			[ $options_manager, 'flush_rewrites_on_save' ],
 			10,
 			2
@@ -52,9 +52,13 @@ class Plugin_Provider implements ServiceProviderInterface {
 			2
 		);
 
-		foreach ( [ 'alphabet', 'min_length', 'salt' ] as $option ) {
+		foreach ( [
+			Options_Manager::ALPHABET_OPTION_KEY,
+			Options_Manager::MIN_LENGTH_OPTION_KEY,
+			Options_Manager::SALT_OPTION_KEY,
+		] as $option ) {
 			add_filter(
-				"pre_option_wp_hashids_{$option}",
+				"pre_option_{$option}",
 				[ $options_manager, 'use_constants_when_defined' ],
 				10,
 				2
@@ -100,14 +104,8 @@ class Plugin_Provider implements ServiceProviderInterface {
 			return new Hashid_Injector( $c['options_manager'], $c['hashids'] );
 		};
 
-		$container['options_manager'] = function( Container $c ) {
-			return new Options_Manager( $c['options_store'] );
-		};
-
-		$container['options_prefix'] = 'wp_hashids';
-
-		$container['options_store'] = function( Container $c ) {
-			return new Options_Store( $c['options_prefix'] );
+		$container['options_manager'] = function() {
+			return new Options_Manager();
 		};
 
 		$container['request_parser'] = function( Container $c ) {

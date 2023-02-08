@@ -78,7 +78,7 @@ class Options_Page {
 		);
 
 		add_settings_field(
-			'wp_hashids_alphabet',
+			Options_Manager::ALPHABET_OPTION_KEY,
 			'Alphabet',
 			function() {
 				$current = $this->options->alphabet();
@@ -110,7 +110,7 @@ class Options_Page {
 		);
 
 		add_settings_field(
-			'wp_hashids_min_length',
+			Options_Manager::MIN_LENGTH_OPTION_KEY,
 			'Minimum Length',
 			function() {
 				$template = 'option-min-length';
@@ -128,7 +128,7 @@ class Options_Page {
 		);
 
 		add_settings_field(
-			'wp_hashids_salt',
+			Options_Manager::SALT_OPTION_KEY,
 			'Hashids Salt',
 			function() {
 				$template = 'option-salt';

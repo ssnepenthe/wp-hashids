@@ -1,29 +1,40 @@
 <?php
 
-use WP_Hashids\Options_Store;
 use WP_Hashids\Options_Manager;
 
 // Possible to test that config can be overridden using constants?
 
 class Options_Manager_Test extends WP_UnitTestCase {
+	public function set_up() {
+		parent::set_up();
+
+		delete_option( Options_Manager::ALPHABET_OPTION_KEY );
+		delete_option( Options_Manager::MIN_LENGTH_OPTION_KEY );
+		delete_option( Options_Manager::SALT_OPTION_KEY );
+	}
+
+	public function tear_down() {
+		delete_option( Options_Manager::ALPHABET_OPTION_KEY );
+		delete_option( Options_Manager::MIN_LENGTH_OPTION_KEY );
+		delete_option( Options_Manager::SALT_OPTION_KEY );
+	}
+
 	/** @test */
 	function salt_is_automatically_generated_and_save_when_not_in_db() {
-		$prefix = 'pfx_' . __METHOD__;
+		$manager = new Options_Manager();
 
-		$manager = new Options_Manager( new Options_Store( $prefix ) );
-
-		$this->assertFalse( get_option( "{$prefix}_salt" ) );
+		$this->assertFalse( get_option( Options_Manager::SALT_OPTION_KEY ) );
 
 		$salt = $manager->salt();
 
 		$this->assertTrue( is_string( $salt ) );
 		$this->assertSame( 64, strlen( $salt ) );
-		$this->assertEquals( $salt, get_option( "{$prefix}_salt" ) );
+		$this->assertEquals( $salt, get_option( Options_Manager::SALT_OPTION_KEY ) );
 	}
 
 	/** @test */
 	function it_can_sanitize_salt() {
-		$manager = new Options_Manager( new Options_Store( 'pfx' ) );
+		$manager = new Options_Manager();
 
 		// Salt is cast to string.
 		$this->assertSame( '0', $manager->sanitize_salt( 0 ) );
@@ -43,9 +54,9 @@ class Options_Manager_Test extends WP_UnitTestCase {
 		global $new_whitelist_options;
 
 		$plugin_options = [
-			'wp_hashids_alphabet',
-			'wp_hashids_min_length',
-			'wp_hashids_salt',
+			Options_Manager::ALPHABET_OPTION_KEY,
+			Options_Manager::MIN_LENGTH_OPTION_KEY,
+			Options_Manager::SALT_OPTION_KEY,
 		];
 
 		$this->assertTrue(

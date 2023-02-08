@@ -5,6 +5,8 @@
  * @package wp-hashids
  */
 
+use WP_Hashids\Options_Manager;
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
 }
@@ -15,15 +17,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  * @return void
  */
 function _wph_uninstall() {
-	$options = [
-		'wp_hashids_alphabet',
-		'wp_hashids_min_length',
-		'wp_hashids_salt',
-	];
-
-	foreach ( $options as $option ) {
-		delete_option( $option );
-	}
+	delete_option( Options_Manager::ALPHABET_OPTION_KEY );
+	delete_option( Options_Manager::MIN_LENGTH_OPTION_KEY );
+	delete_option( Options_Manager::SALT_OPTION_KEY );
 }
 
 _wph_uninstall();

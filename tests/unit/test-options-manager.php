@@ -3,7 +3,6 @@
 use Brain\Monkey;
 use Brain\Monkey\Functions;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use WP_Hashids\Options_Store;
 use WP_Hashids\Options_Manager;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
@@ -22,9 +21,9 @@ class Options_Manager_Test extends TestCase {
 
 	/** @test */
 	function it_can_get_the_hashid_alphabet_default() {
-		Functions\when( 'get_option' )->justReturn( null );
+		Functions\when( 'get_option' )->justReturn( false );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['all']['alphabet'],
@@ -36,7 +35,7 @@ class Options_Manager_Test extends TestCase {
 	function it_can_get_configured_hashid_alphabet() {
 		Functions\when( 'get_option' )->justReturn( 'lowerupper' );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['lowerupper']['alphabet'],
@@ -50,9 +49,9 @@ class Options_Manager_Test extends TestCase {
 			return abs( intval( $value ) );
 		} );
 
-		Functions\when( 'get_option' )->justReturn( null );
+		Functions\when( 'get_option' )->justReturn( false );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertSame( 0, $manager->min_length() );
 	}
@@ -65,7 +64,7 @@ class Options_Manager_Test extends TestCase {
 
 		Functions\when( 'get_option' )->justReturn( 8 );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertSame( 8, $manager->min_length() );
 	}
@@ -78,16 +77,16 @@ class Options_Manager_Test extends TestCase {
 
 		Functions\when( 'get_option' )->justReturn( '6' );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertSame( 6, $manager->min_length() );
 	}
 
 	/** @test */
 	function it_can_get_the_rewrite_regex_default() {
-		Functions\when( 'get_option' )->justReturn( null );
+		Functions\when( 'get_option' )->justReturn( false );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['all']['regex'],
@@ -100,7 +99,7 @@ class Options_Manager_Test extends TestCase {
 	function it_can_get_the_configured_rewrite_regex() {
 		Functions\when( 'get_option' )->justReturn( 'lowerupper' );
 
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		$this->assertEquals(
 			Options_Manager::ALPHABET_MAP['lowerupper']['regex'],
@@ -110,14 +109,14 @@ class Options_Manager_Test extends TestCase {
 
 	/** @test */
 	function it_can_get_the_rewrite_tag() {
-		$manager = new Options_Manager( Mockery::mock( Options_Store::class ) );
+		$manager = new Options_Manager();
 
 		$this->assertEquals( '%hashid%', $manager->rewrite_tag() );
 	}
 
 	/** @test */
 	function it_can_sanitize_alphabet() {
-		$manager = new Options_Manager( new Options_Store() );
+		$manager = new Options_Manager();
 
 		// Unrecognized alphabets are reset to all.
 		$this->assertEquals( 'all', $manager->sanitize_alphabet( 'test' ) );

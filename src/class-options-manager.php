@@ -52,21 +52,9 @@ class Options_Manager {
 		],
 	];
 
-	/**
-	 * Options store instance.
-	 *
-	 * @var Options_Store
-	 */
-	protected $store;
-
-	/**
-	 * Class constructor.
-	 *
-	 * @param Options_Store $store Options store instance.
-	 */
-	public function __construct( Options_Store $store ) {
-		$this->store = $store;
-	}
+	const ALPHABET_OPTION_KEY = 'wp_hashids_alphabet';
+	const MIN_LENGTH_OPTION_KEY = 'wp_hashids_min_length';
+	const SALT_OPTION_KEY = 'wp_hashids_salt';
 
 	/**
 	 * Get the configured alphabet - Looks in constants first, then DB.
@@ -75,7 +63,7 @@ class Options_Manager {
 	 */
 	public function alphabet() {
 		// If not set, will be "all" as set in ->register_settings().
-		$alphabet = $this->sanitize_alphabet( $this->store->get( 'alphabet' ) );
+		$alphabet = $this->sanitize_alphabet( get_option( self::ALPHABET_OPTION_KEY ) );
 
 		return self::ALPHABET_MAP[ $alphabet ]['alphabet'];
 	}
@@ -103,7 +91,7 @@ class Options_Manager {
 	 */
 	public function min_length() {
 		// If not set, will be 6 as set in ->register_settings().
-		return absint( $this->store->get( 'min_length' ) );
+		return absint( get_option( self::MIN_LENGTH_OPTION_KEY ) );
 	}
 
 	/**
@@ -113,7 +101,7 @@ class Options_Manager {
 	 */
 	public function regex() {
 		// If not set, will be "all" as set in ->register_settings().
-		$alphabet = $this->sanitize_alphabet( $this->store->get( 'alphabet' ) );
+		$alphabet = $this->sanitize_alphabet( get_option( self::ALPHABET_OPTION_KEY ) );
 
 		return self::ALPHABET_MAP[ $alphabet ]['regex'];
 	}
@@ -124,20 +112,20 @@ class Options_Manager {
 	 * @return void
 	 */
 	public function register_settings() {
-		register_setting( 'wp_hashids_group', 'wp_hashids_alphabet', [
+		register_setting( 'wp_hashids_group', self::ALPHABET_OPTION_KEY, [
 			'default' => 'all',
 			'sanitize_callback' => [ $this, 'sanitize_alphabet' ],
 			'show_in_rest' => true,
 		] );
 
-		register_setting( 'wp_hashids_group', 'wp_hashids_min_length', [
+		register_setting( 'wp_hashids_group', self::MIN_LENGTH_OPTION_KEY, [
 			'default' => 6,
 			'sanitize_callback' => 'absint',
 			'show_in_rest' => true,
 			'type' => 'integer',
 		] );
 
-		register_setting( 'wp_hashids_group', 'wp_hashids_salt', [
+		register_setting( 'wp_hashids_group', self::SALT_OPTION_KEY, [
 			'sanitize_callback' => [ $this, 'sanitize_salt' ],
 			'show_in_rest' => true,
 		] );
@@ -162,7 +150,7 @@ class Options_Manager {
 		$needs_save = false;
 
 		// If not set, will be null - there is no default.
-		$salt = $this->store->get( 'salt' );
+		$salt = get_option( self::SALT_OPTION_KEY, null );
 
 		// First run it will be null (non-existent in DB).
 		if ( is_null( $salt ) ) {
@@ -172,7 +160,7 @@ class Options_Manager {
 		$salt = $this->sanitize_salt( $salt );
 
 		if ( $needs_save ) {
-			$this->store->set( 'salt', $salt );
+			update_option( self::SALT_OPTION_KEY, $salt );
 		}
 
 		return $salt;
