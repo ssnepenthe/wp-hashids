@@ -115,5 +115,9 @@ class Plugin_Provider implements ServiceProviderInterface {
 		$container['rewrite_manager'] = function( Container $c ) {
 			return new Rewrite_Manager( $c['options_manager'] );
 		};
+
+		$container['template'] = function( Container $c ) {
+			return new Template( $c['dir'] . '/templates' );
+		};
 	}
 }
