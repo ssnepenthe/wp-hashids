@@ -1,5 +1,10 @@
+node_modules/
 vendor/
 wordpress/
+wp-env/
 .phpunit.result.cache
+.wp-env.json
 composer.lock
+package.json
+package-lock.json
 wp-cli.local.yml
