@@ -234,6 +234,6 @@ class Options_Manager {
 	 * @return boolean
 	 */
 	protected function is_valid_alphabet( $alphabet ) {
-		return array_key_exists( $alphabet, self::ALPHABET_MAP );
+		return is_string( $alphabet ) && array_key_exists( $alphabet, self::ALPHABET_MAP );
 	}
 }
