@@ -52,7 +52,6 @@ function _wph_instance( $id = null ) {
 		$instance->register( new Metis\WordPress_Provider() );
 		$instance->register( new WP_Hashids\Admin_Provider() );
 		$instance->register( new WP_Hashids\Hashids_Provider() );
-		$instance->register( new WP_Hashids\Plates_Provider() );
 		$instance->register( new WP_Hashids\Plugin_Provider() );
 	}
 
@@ -85,9 +84,6 @@ function _wph_init() {
 
 	// Hashids lib must be loaded.
 	$checker->class_exists( 'Hashids\\Hashids' );
-
-	// Plates lib must be loaded.
-	$checker->class_exists( 'League\\Plates\\Engine' );
 
 	// Metis lib must be loaded which also requires Pimple.
 	$checker->class_exists( 'Metis\\Container' );

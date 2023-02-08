@@ -49,7 +49,7 @@ class Admin_Provider implements ServiceProviderInterface {
 	 */
 	public function register( Container $container ) {
 		$container['options_page'] = function( Container $c ) {
-			return new Options_Page( $c['options_manager'], $c['plates'] );
+			return new Options_Page( $c['options_manager'], $c['template'] );
 		};
 	}
 

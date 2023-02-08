@@ -7,8 +7,6 @@
 
 namespace WP_Hashids;
 
-use League\Plates\Engine;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
@@ -25,9 +23,9 @@ class Options_Page {
 	protected $options;
 
 	/**
-	 * Plates engine instance.
+	 * Template instance.
 	 *
-	 * @var Engine
+	 * @var Template
 	 */
 	protected $template;
 
@@ -35,9 +33,9 @@ class Options_Page {
 	 * Class constructor.
 	 *
 	 * @param Options_Manager $options  Options manager instance.
-	 * @param Engine          $template Plates engine instance.
+	 * @param Template        $template Template instance.
 	 */
-	public function __construct( Options_Manager $options, Engine $template ) {
+	public function __construct( Options_Manager $options, Template $template ) {
 		$this->options = $options;
 		$this->template = $template;
 	}
